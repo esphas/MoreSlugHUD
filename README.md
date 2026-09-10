@@ -2,6 +2,8 @@
 
 雨世界 mod，添加了多项实用 HUD。
 
+[Steam 创意工坊](https://steamcommunity.com/sharedfiles/filedetails/?id=3798937497)
+
 ## 功能介绍
 
 ### 库存
@@ -12,9 +14,6 @@
 （事实上这个 mod 的起点就是“我想把它待办里说的合成预测做出来”，只不过后续加入了其他新的想法，才导致最终单独写了一个 mod，而不是一个 fork。衷心致谢。）
 
 支持十字和横排两种展示方式，可自定义屏幕坐标。
-
-![preview-inventory-cross](static/preview-inventory-cross.png)
-![preview-inventory-row](static/preview-inventory-row.png)
 
 ### 生物标签
 
@@ -27,9 +26,6 @@
 
 各项目可独立切换是否展示。
 
-![preview-id-1](static/preview-id-1.png)
-![preview-id-2](static/preview-id-2.png)
-
 ### 输入历史
 
 实时展示一个带帧数的玩家输入和运动状态的历史日志。（玩过格斗游戏的话，应该会很熟悉。）
@@ -40,8 +36,6 @@
 （remix 配置面板中有图例，目前的这套图标是我手绘的，我对其并不满意，欢迎提交改进。）
 
 我在该功能开发完成之后，才注意到类似功能已有 [Debug - Input Log](url=https://steamcommunity.com/sharedfiles/filedetails/?id=3157558337) 提供。经过考察之后，我认为我实现的效果和它提供的仍然存在差异，因此保留了该功能。
-
-![preview-history](static/preview-history.png)
 
 ### 杂项
 

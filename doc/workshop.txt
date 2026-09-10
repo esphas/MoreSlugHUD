@@ -15,9 +15,6 @@
 
 支持十字和横排两种展示方式，可自定义屏幕坐标。
 
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-inventory-cross.png[/img]
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-inventory-row.png[/img]
-
 
 [b]生物标签[/b]
 
@@ -30,9 +27,6 @@
 
 各项目可独立切换是否展示。
 
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-id-1.png[/img]
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-id-2.png[/img]
-
 
 [b]输入历史[/b]
 
@@ -44,8 +38,6 @@
 （remix 配置面板中有图例，目前的这套图标是我手绘的，我对其并不满意，欢迎提交改进。）
 
 我在该功能开发完成之后，才注意到类似功能已有 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3157558337]Debug - Input Log[/url] 提供。经过考察之后，我认为我实现的效果和它提供的仍然存在差异，因此保留了该功能。
-
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-history.png[/img]
 
 
 [b]杂项[/b]
@@ -71,9 +63,6 @@ Inspired by [url=https://steamcommunity.com/sharedfiles/filedetails/?id=29577458
 
 Cross or row layout. You can pick where it sits on screen.
 
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-inventory-cross.png[/img]
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-inventory-row.png[/img]
-
 
 [b]Creature labels[/b]
 
@@ -86,9 +75,6 @@ Recognition names use ancient runes. I cannot read them either, but they look co
 
 Each piece can be toggled on its own.
 
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-id-1.png[/img]
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-id-2.png[/img]
-
 
 [b]Input history[/b]
 
@@ -100,8 +86,6 @@ Movement states and actions use letters by default. You can switch to icons.
 (Remix has a legend. I drew the icons myself and I am not happy with them; better art is welcome.)
 
 I only noticed [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3157558337]Debug - Input Log[/url] after I finished this. I still think the two look different enough, so I kept it.
-
-[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-history.png[/img]
 
 
 [b]Misc[/b]
