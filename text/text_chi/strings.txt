@@ -1,0 +1,106 @@
+more_slug_hud-name|MoreSlugHUD
+more_slug_hud-description|多种可配置的 HUD。
+more_slug_hud.input.toggle_hud|切换库存
+more_slug_hud.input.toggle_id|切换标签
+more_slug_hud.input.toggle_history|切换输入历史
+more_slug_hud.options.tab.inventory|库存
+more_slug_hud.options.tab.id|标签
+more_slug_hud.options.tab.history|输入历史
+more_slug_hud.options.section.slots|栏位
+more_slug_hud.options.section.layout|布局
+more_slug_hud.options.enabled|启用库存 HUD
+more_slug_hud.options.toggle_hint|通过 IIC 中配置的按键，可在游戏中切换库存栏的显示。
+more_slug_hud.options.slot.left|左手
+more_slug_hud.options.slot.right|右手
+more_slug_hud.options.slot.stomach|腹部
+more_slug_hud.options.slot.back|背部
+more_slug_hud.options.slot.craft|合成预测
+more_slug_hud.options.style|风格
+more_slug_hud.options.style.row|横排
+more_slug_hud.options.style.cross|十字
+more_slug_hud.options.position|位置
+more_slug_hud.options.position.bottom_center|底部居中
+more_slug_hud.options.position.top_center|顶部居中
+more_slug_hud.options.position.top_left|左上
+more_slug_hud.options.position.top_right|右上
+more_slug_hud.options.position.bottom_right|右下
+more_slug_hud.options.position.custom|自定义
+more_slug_hud.options.custom_x|自定义 X
+more_slug_hud.options.custom_y|自定义 Y
+more_slug_hud.options.enabled.hint|库存栏的总开关。
+more_slug_hud.options.style.row.hint|从左到右：合成、左手、右手、腹部、背部。
+more_slug_hud.options.style.cross.hint|上背下腹，左右双手，合成预测展示在左手左边。
+more_slug_hud.options.position.hint|屏幕上的位置。
+more_slug_hud.options.custom_x.hint|0 靠左，100 靠右。
+more_slug_hud.options.custom_y.hint|0 靠下，100 靠上。
+more_slug_hud.options.id.enabled|启用生物标签
+more_slug_hud.options.id.enabled.hint|头顶标签的总开关。
+more_slug_hud.options.id.show_number|编号
+more_slug_hud.options.id.show_name|辨识名
+more_slug_hud.options.id.show_name.hint|每只生物一个独特的短名。
+more_slug_hud.options.id.show_intent|意图
+more_slug_hud.options.id.show_intent.hint|用图标表示当前意图。
+more_slug_hud.options.id.show_background|启用标签背景
+more_slug_hud.options.id.show_background.hint|在标签下绘制半透明黑色背景，以提高辨识度。
+more_slug_hud.options.id.arrange|展示方式
+more_slug_hud.options.id.arrange.hint|各标签项的布局。
+more_slug_hud.options.id.arrange.row|横排
+more_slug_hud.options.id.arrange.row.hint|从左到右排成一行。
+more_slug_hud.options.id.arrange.stack|纵排
+more_slug_hud.options.id.arrange.stack.hint|各占一行，意图贴在第一项旁边。
+more_slug_hud.options.id.arrange.cycle|轮换
+more_slug_hud.options.id.arrange.cycle.hint|编号与辨识名轮换，意图留在右边。
+more_slug_hud.options.id.toggle_hint|通过 IIC 中配置的按键，可在游戏中切换标签的显示。
+more_slug_hud.options.id.familiarity|熟悉度阈值（%）
+more_slug_hud.options.id.familiarity.hint|显示标签所需的熟悉程度。0 为全部显示。
+more_slug_hud.options.id.strict_watch|严格观察判断
+more_slug_hud.options.id.strict_watch.hint|开启时，需要玩家和目标之间无视线阻挡才视为观察到目标；关闭时，仅需在同一个镜头内。
+more_slug_hud.options.id.watch_seconds|观察时间（秒）
+more_slug_hud.options.id.watch_seconds.hint|目标被观察多久之后，熟悉度达到满值。
+more_slug_hud.options.id.show_dead|死后显示
+more_slug_hud.options.history.enabled|启用输入历史
+more_slug_hud.options.history.enabled.hint|输入历史的总开关。
+more_slug_hud.options.history.toggle_hint|通过 IIC 中配置的按键，可在游戏中切换输入历史的显示。默认 H。
+more_slug_hud.options.history.side|位置
+more_slug_hud.options.history.side.hint|贴在屏幕左上或右上，给库存 HUD 留出顶边。
+more_slug_hud.options.history.side.left|左侧
+more_slug_hud.options.history.side.right|右侧
+more_slug_hud.options.history.density|间距
+more_slug_hud.options.history.density.compact|紧凑
+more_slug_hud.options.history.density.compact.hint|更贴边，行距更小。
+more_slug_hud.options.history.density.loose|宽松
+more_slug_hud.options.history.density.loose.hint|离边更远，行距更大。
+more_slug_hud.options.history.letters|字母模式
+more_slug_hud.options.history.letters.hint|用字母代替图标。
+more_slug_hud.options.history.max_rows|最大行数
+more_slug_hud.options.history.opacity|透明度
+more_slug_hud.options.history.track.direction|方向
+more_slug_hud.options.history.track.actions|动作
+more_slug_hud.options.history.track.states|状态
+more_slug_hud.options.history.legend|图例
+more_slug_hud.options.history.dir.nw|左上
+more_slug_hud.options.history.dir.n|上
+more_slug_hud.options.history.dir.ne|右上
+more_slug_hud.options.history.dir.w|左
+more_slug_hud.options.history.dir.neutral|空档
+more_slug_hud.options.history.dir.e|右
+more_slug_hud.options.history.dir.sw|左下
+more_slug_hud.options.history.dir.s|下
+more_slug_hud.options.history.dir.se|右下
+more_slug_hud.options.history.track.jump|跳跃
+more_slug_hud.options.history.track.throw|投掷
+more_slug_hud.options.history.track.pickup|抓取
+more_slug_hud.options.history.track.special|特殊
+more_slug_hud.options.history.track.incap|失能
+more_slug_hud.options.history.track.grabbed|被抓
+more_slug_hud.options.history.track.shortcut|捷径中
+more_slug_hud.options.history.track.corridor|隧行中
+more_slug_hud.options.history.track.zerog|失重
+more_slug_hud.options.history.track.zerog_pole|失重抓杆
+more_slug_hud.options.history.track.swim_surface|表面泳
+more_slug_hud.options.history.track.swim_deep|深泳
+more_slug_hud.options.history.track.wall|爬墙
+more_slug_hud.options.history.track.pole|爬杆
+more_slug_hud.options.history.track.stand|站立
+more_slug_hud.options.history.track.crawl|爬行
+more_slug_hud.options.history.track.air|空中

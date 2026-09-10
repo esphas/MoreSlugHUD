@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="GamePaths.props" />
+  <Import Project="GamePaths.local.props" Condition="Exists('GamePaths.local.props')" />
+
+  <PropertyGroup>
+    <ManagedDir>$(RWDir)\RainWorld_Data\Managed</ManagedDir>
+    <BepInExDir>$(RWDir)\BepInEx</BepInExDir>
+    <IICDir Condition="'$(IICDir)' == ''">lib</IICDir>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>MoreSlugHUD</RootNamespace>
+    <AssemblyName>MoreSlugHUD</AssemblyName>
+    <OutputPath>plugins\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx"><HintPath>$(BepInExDir)\core\BepInEx.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="HOOKS-Assembly-CSharp"><HintPath>$(BepInExDir)\plugins\HOOKS-Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Assembly-CSharp"><HintPath>$(BepInExDir)\utils\PUBLIC-Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="ImprovedInput"><HintPath>$(IICDir)\ImprovedInput.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(ManagedDir)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(ManagedDir)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InputLegacyModule"><HintPath>$(ManagedDir)\UnityEngine.InputLegacyModule.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>
+

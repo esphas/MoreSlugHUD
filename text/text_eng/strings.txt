@@ -1,0 +1,106 @@
+more_slug_hud-name|MoreSlugHUD
+more_slug_hud-description|Several configurable HUDs.
+more_slug_hud.input.toggle_hud|Toggle inventory
+more_slug_hud.input.toggle_id|Toggle labels
+more_slug_hud.input.toggle_history|Toggle input history
+more_slug_hud.options.tab.inventory|Inventory
+more_slug_hud.options.tab.id|Labels
+more_slug_hud.options.tab.history|Input history
+more_slug_hud.options.section.slots|Slots
+more_slug_hud.options.section.layout|Layout
+more_slug_hud.options.enabled|Enable inventory HUD
+more_slug_hud.options.toggle_hint|The key configured in IIC toggles the inventory bar in-game.
+more_slug_hud.options.slot.left|Left hand
+more_slug_hud.options.slot.right|Right hand
+more_slug_hud.options.slot.stomach|Stomach
+more_slug_hud.options.slot.back|Back
+more_slug_hud.options.slot.craft|Craft preview
+more_slug_hud.options.style|Style
+more_slug_hud.options.style.row|Row
+more_slug_hud.options.style.cross|Cross
+more_slug_hud.options.position|Position
+more_slug_hud.options.position.bottom_center|Bottom center
+more_slug_hud.options.position.top_center|Top center
+more_slug_hud.options.position.top_left|Top left
+more_slug_hud.options.position.top_right|Top right
+more_slug_hud.options.position.bottom_right|Bottom right
+more_slug_hud.options.position.custom|Custom
+more_slug_hud.options.custom_x|Custom X
+more_slug_hud.options.custom_y|Custom Y
+more_slug_hud.options.enabled.hint|Turns the inventory bar on.
+more_slug_hud.options.style.row.hint|Left to right: craft, left, right, stomach, back.
+more_slug_hud.options.style.cross.hint|Back up, stomach down, both hands, craft preview shown left of the left hand.
+more_slug_hud.options.position.hint|Place on screen.
+more_slug_hud.options.custom_x.hint|0 is left, 100 is right.
+more_slug_hud.options.custom_y.hint|0 is bottom, 100 is top.
+more_slug_hud.options.id.enabled|Enable creature labels
+more_slug_hud.options.id.enabled.hint|Turns overhead labels on.
+more_slug_hud.options.id.show_number|Number
+more_slug_hud.options.id.show_name|Name
+more_slug_hud.options.id.show_name.hint|A unique short name for each creature.
+more_slug_hud.options.id.show_intent|Intent
+more_slug_hud.options.id.show_intent.hint|An icon for current intent.
+more_slug_hud.options.id.show_background|Enable label background
+more_slug_hud.options.id.show_background.hint|Draw a semi-transparent black background under labels to improve readability.
+more_slug_hud.options.id.arrange|Arrangement
+more_slug_hud.options.id.arrange.hint|Layout of the label pieces.
+more_slug_hud.options.id.arrange.row|Row
+more_slug_hud.options.id.arrange.row.hint|One line, left to right.
+more_slug_hud.options.id.arrange.stack|Column
+more_slug_hud.options.id.arrange.stack.hint|Each on its own line, intent beside the first item.
+more_slug_hud.options.id.arrange.cycle|Cycle
+more_slug_hud.options.id.arrange.cycle.hint|Number and name take turns. Intent stays on the right.
+more_slug_hud.options.id.toggle_hint|The key configured in IIC toggles labels in-game.
+more_slug_hud.options.id.familiarity|Familiarity threshold (%)
+more_slug_hud.options.id.familiarity.hint|Familiarity needed for a label. 0 shows all.
+more_slug_hud.options.id.strict_watch|Strict line of sight
+more_slug_hud.options.id.strict_watch.hint|When on, the player needs a clear line of sight to the target. When off, sharing the same camera is enough.
+more_slug_hud.options.id.watch_seconds|Observation time (s)
+more_slug_hud.options.id.watch_seconds.hint|How long a target must be watched before watch familiarity is full.
+more_slug_hud.options.id.show_dead|Show the dead
+more_slug_hud.options.history.enabled|Enable input history
+more_slug_hud.options.history.enabled.hint|Turns the input history HUD on.
+more_slug_hud.options.history.toggle_hint|The key configured in IIC toggles input history in-game. Default H.
+more_slug_hud.options.history.side|Position
+more_slug_hud.options.history.side.hint|Top-left or top-right, leaving the top edge for the inventory HUD.
+more_slug_hud.options.history.side.left|Left
+more_slug_hud.options.history.side.right|Right
+more_slug_hud.options.history.density|Spacing
+more_slug_hud.options.history.density.compact|Compact
+more_slug_hud.options.history.density.compact.hint|Closer to the edge, tighter rows.
+more_slug_hud.options.history.density.loose|Loose
+more_slug_hud.options.history.density.loose.hint|Farther from the edge, roomier rows.
+more_slug_hud.options.history.letters|Letter mode
+more_slug_hud.options.history.letters.hint|Use letters instead of icons.
+more_slug_hud.options.history.max_rows|Maximum rows
+more_slug_hud.options.history.opacity|Opacity
+more_slug_hud.options.history.track.direction|Direction
+more_slug_hud.options.history.track.actions|Actions
+more_slug_hud.options.history.track.states|States
+more_slug_hud.options.history.legend|Legend
+more_slug_hud.options.history.dir.nw|Up-left
+more_slug_hud.options.history.dir.n|Up
+more_slug_hud.options.history.dir.ne|Up-right
+more_slug_hud.options.history.dir.w|Left
+more_slug_hud.options.history.dir.neutral|Neutral
+more_slug_hud.options.history.dir.e|Right
+more_slug_hud.options.history.dir.sw|Down-left
+more_slug_hud.options.history.dir.s|Down
+more_slug_hud.options.history.dir.se|Down-right
+more_slug_hud.options.history.track.jump|Jump
+more_slug_hud.options.history.track.throw|Throw
+more_slug_hud.options.history.track.pickup|Grab
+more_slug_hud.options.history.track.special|Special
+more_slug_hud.options.history.track.incap|Incapacitated
+more_slug_hud.options.history.track.grabbed|Grabbed
+more_slug_hud.options.history.track.shortcut|In shortcut
+more_slug_hud.options.history.track.corridor|In corridor
+more_slug_hud.options.history.track.zerog|Zero G
+more_slug_hud.options.history.track.zerog_pole|Zero G pole
+more_slug_hud.options.history.track.swim_surface|Surface swim
+more_slug_hud.options.history.track.swim_deep|Deep swim
+more_slug_hud.options.history.track.wall|Wall climb
+more_slug_hud.options.history.track.pole|Pole
+more_slug_hud.options.history.track.stand|Standing
+more_slug_hud.options.history.track.crawl|Crawling
+more_slug_hud.options.history.track.air|Airborne

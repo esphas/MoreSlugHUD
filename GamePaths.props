@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <RWDir Condition="'$(RWDir)' == ''">/home/main/.local/share/Steam/steamapps/common/Rain World/</RWDir>
+  </PropertyGroup>
+</Project>
+

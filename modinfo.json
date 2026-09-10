@@ -1,0 +1,9 @@
+{
+  "id": "more_slug_hud",
+  "name": "MoreSlugHUD",
+  "version": "0.1.0",
+  "authors": "esphas",
+  "description": "Several extra HUDs.",
+  "requirements": ["improved-input-config"],
+  "checksum_override_version": true
+}

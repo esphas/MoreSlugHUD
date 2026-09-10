@@ -1,0 +1,13 @@
+plugins/*.dll
+plugins/*.pdb
+bin/
+obj/
+dist/
+temp/
+lib/*.dll
+lib/*.pdb
+lib/*.xml
+GamePaths.local.props
+.vs/
+*.user
+.idea/
