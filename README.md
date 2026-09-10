@@ -13,6 +13,9 @@
 
 支持十字和横排两种展示方式，可自定义屏幕坐标。
 
+![preview-inventory-cross](static/preview-inventory-cross.png)
+![preview-inventory-row](static/preview-inventory-row.png)
+
 ### 生物标签
 
 给特定生物（蜥蜴、拾荒者、猫崽）头顶展示编号、辨识名与意图（中立、友善与攻击）。
@@ -24,6 +27,9 @@
 
 各项目可独立切换是否展示。
 
+![preview-id-1](static/preview-id-1.png)
+![preview-id-2](static/preview-id-2.png)
+
 ### 输入历史
 
 实时展示一个带帧数的玩家输入和运动状态的历史日志。（玩过格斗游戏的话，应该会很熟悉。）
@@ -34,6 +40,8 @@
 （remix 配置面板中有图例，目前的这套图标是我手绘的，我对其并不满意，欢迎提交改进。）
 
 我在该功能开发完成之后，才注意到类似功能已有 [Debug - Input Log](url=https://steamcommunity.com/sharedfiles/filedetails/?id=3157558337) 提供。经过考察之后，我认为我实现的效果和它提供的仍然存在差异，因此保留了该功能。
+
+![preview-history](static/preview-history.png)
 
 ### 杂项
 
