@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace MoreSlugHUD;
 
@@ -21,23 +21,24 @@ internal static class SessionVisibility
         internal int HistoryClock = int.MinValue;
     }
 
-    private static readonly ConditionalWeakTable<Player, Flags> Table = new();
+    private static readonly Dictionary<int, Flags> Table = new();
+    private static string? _playthrough;
+
+    internal static void Reset()
+    {
+        Table.Clear();
+        _playthrough = null;
+    }
 
     internal static bool IsVisible(Player player, HudLayer layer)
     {
-        var flags = Table.GetValue(player, _ => new Flags());
-        return layer switch
-        {
-            HudLayer.Id => flags.Id,
-            HudLayer.History => flags.History,
-            _ => flags.Inventory,
-        };
+        return LayerOf(Of(player), layer);
     }
 
     internal static void Toggle(Player player, HudLayer layer)
     {
         var clock = player.abstractCreature?.world?.game?.clock ?? int.MinValue;
-        var flags = Table.GetValue(player, _ => new Flags());
+        var flags = Of(player);
         ref var last = ref ClockOf(flags, layer);
         if (clock == last)
         {
@@ -58,6 +59,72 @@ internal static class SessionVisibility
                 break;
         }
     }
+
+    private static Flags Of(Player player)
+    {
+        EnsurePlaythrough(player);
+        var key = player.playerState?.playerNumber ?? 0;
+        if (!Table.TryGetValue(key, out var flags))
+        {
+            flags = new Flags();
+            Table[key] = flags;
+        }
+
+        return flags;
+    }
+
+    private static void EnsurePlaythrough(Player player)
+    {
+        var playthrough = PlaythroughOf(player);
+        if (playthrough == null)
+        {
+            return;
+        }
+
+        if (_playthrough == null)
+        {
+            _playthrough = playthrough;
+            return;
+        }
+
+        if (_playthrough == playthrough)
+        {
+            return;
+        }
+
+        Table.Clear();
+        _playthrough = playthrough;
+    }
+
+    private static string? PlaythroughOf(Player player)
+    {
+        var game = GameContext.FromPlayer(player);
+        if (game == null)
+        {
+            return null;
+        }
+
+        if (game.IsArenaSession)
+        {
+            return "arena";
+        }
+
+        if (!game.IsStorySession)
+        {
+            return "other";
+        }
+
+        var slot = game.rainWorld?.options?.saveSlot ?? 0;
+        var slug = game.GetStorySession.saveState?.saveStateNumber?.value ?? "story";
+        return $"story:{slot}:{slug}";
+    }
+
+    private static bool LayerOf(Flags flags, HudLayer layer) => layer switch
+    {
+        HudLayer.Id => flags.Id,
+        HudLayer.History => flags.History,
+        _ => flags.Inventory,
+    };
 
     private static ref int ClockOf(Flags flags, HudLayer layer)
     {

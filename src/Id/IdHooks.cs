@@ -46,12 +46,17 @@ internal static class IdHooks
     {
         orig(self, asDeath, asQuit);
         IdLabelRegistry.ClearAll();
+        if (asQuit)
+        {
+            SessionVisibility.Reset();
+        }
     }
 
     private static void ExitToMenu(On.RainWorldGame.orig_ExitToMenu orig, RainWorldGame self)
     {
         orig(self);
         IdLabelRegistry.ClearAll();
+        SessionVisibility.Reset();
     }
 
     private static void NextLevel(On.ArenaSitting.orig_NextLevel orig, ArenaSitting self, ProcessManager manager)
@@ -64,5 +69,6 @@ internal static class IdHooks
     {
         orig(self, session);
         IdLabelRegistry.ClearAll();
+        SessionVisibility.Reset();
     }
 }

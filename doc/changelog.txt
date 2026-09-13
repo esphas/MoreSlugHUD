@@ -1,4 +1,7 @@
 ---
+v0.1.1
+按键切换的显示状态会在雨循环之间保留
+Toggle visibility now persists across rain cycles
 v0.1.0
 初次发布
 Initial release
