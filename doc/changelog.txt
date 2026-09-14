@@ -1,4 +1,10 @@
 ---
+v0.1.3
+调整了部分意图检测，以使其在拾荒者和蜥蜴上表现得更准确
+Adjusted some intent checks so they read more accurately on scavengers and lizards
+v0.1.2
+调整了生物标签所使用的编号，以确保雨甸联机时各玩家观察结果一致
+Adjusted creature label numbering so observations stay consistent across Rain Meadow clients
 v0.1.1
 按键切换的显示状态会在雨循环之间保留
 Toggle visibility now persists across rain cycles

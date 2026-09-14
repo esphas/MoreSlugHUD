@@ -31,12 +31,12 @@ internal static class IdName
 
         var id = creature.abstractCreature.ID;
         var type = creature.Template?.type.Index ?? 0;
-        return Generate(id.spawner, id.number, type, kind);
+        return Generate(id.RandomSeed, type, kind);
     }
 
-    internal static int[] Generate(int spawner, int number, int typeIndex, IdNameKind kind)
+    internal static int[] Generate(int seed, int typeIndex, IdNameKind kind)
     {
-        var rng = new Rng(spawner, number, typeIndex * 17 + (int)kind * 1021);
+        var rng = new Rng(seed, typeIndex * 17 + (int)kind * 1021);
         var twoWord = rng.Chance(TwoWordChance(kind));
         var template = Pick(rng, twoWord ? Names(kind) : Words(kind));
         var glyphs = new int[template.Length];
@@ -104,11 +104,11 @@ internal static class IdName
     {
         private uint _state;
 
-        internal Rng(int spawner, int number, int salt)
+        internal Rng(int seed, int salt)
         {
             unchecked
             {
-                _state = (uint)(spawner * -1640531527 + number * 265443576 + salt * 1597334677);
+                _state = (uint)(seed * 265443576 + salt * 1597334677);
             }
 
             if (_state == 0)

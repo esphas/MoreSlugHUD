@@ -11,8 +11,8 @@ internal sealed class IdLabelModel
     internal IdLabelModel(Creature creature)
     {
         Glyphs = IdName.For(creature);
-        var id = creature.abstractPhysicalObject?.ID;
-        _shakeRng = (uint)((id?.spawner ?? 0) * -1640531527 + (id?.number ?? 0) * 265443576 + 0x9E3779B9);
+        var seed = creature.abstractPhysicalObject?.ID.RandomSeed ?? 0;
+        _shakeRng = (uint)(seed * 265443576 + 0x9E3779B9);
         if (_shakeRng == 0)
         {
             _shakeRng = 0xA341316Cu;
@@ -23,7 +23,7 @@ internal sealed class IdLabelModel
 
     internal string NumberText(Creature creature)
     {
-        var number = creature.abstractPhysicalObject?.ID.number ?? 0;
+        var number = creature.abstractPhysicalObject?.ID.RandomSeed ?? 0;
         if (number != _numberValue)
         {
             _numberValue = number;
@@ -36,7 +36,7 @@ internal sealed class IdLabelModel
     internal bool CycleShowsNumber(Creature creature)
     {
         var clock = creature.room?.game?.clock ?? 0;
-        var number = creature.abstractPhysicalObject?.ID.number ?? 0;
+        var number = creature.abstractPhysicalObject?.ID.RandomSeed ?? 0;
         var phase = (clock / MoreSlugHUDConfig.IdCycleTicks + number) % 2;
         if (phase < 0)
         {

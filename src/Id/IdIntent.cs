@@ -101,18 +101,24 @@ internal static class IdIntent
             return true;
         }
 
-        var memory = creature.State?.socialMemory;
-        var apo = viewer.abstractCreature;
-        if (creature is Scavenger scavenger && scavenger.PlayerHasImmunity(viewer))
+        if (creature is Scavenger scavenger)
         {
-            return true;
+            return ScavengerFriendly(scavenger, viewer);
         }
 
+        var memory = creature.State?.socialMemory;
+        var apo = viewer.abstractCreature;
         return memory != null && apo != null && memory.GetLike(apo.ID) > 0.5f;
     }
 
     private static bool LizardHostile(Lizard lizard, Player viewer)
     {
+        if (lizard.AI?.behavior == LizardAI.Behavior.FollowFriend
+            && ReferenceEquals(lizard.AI.friendTracker?.friend, viewer))
+        {
+            return false;
+        }
+
         if (TongueOn(lizard, viewer))
         {
             return true;
@@ -166,12 +172,38 @@ internal static class IdIntent
             return true;
         }
 
-        var tracked = scavenger.AI?.preyTracker?.MostAttractivePrey;
-        var prey = tracked?.representedCreature?.realizedCreature;
-        return scavenger.AI?.behavior == ScavengerAI.Behavior.Attack
-            && tracked is { VisualContact: true }
-            && ReferenceEquals(prey, viewer)
-            && Custom.DistLess(scavenger.mainBodyChunk.pos, viewer.mainBodyChunk.pos, 90f);
+        var rel = PlayerRel(scavenger, viewer);
+        return rel != null
+            && rel.currentRelationship.type == CreatureTemplate.Relationship.Type.Attacks;
+    }
+
+    private static bool ScavengerFriendly(Scavenger scavenger, Player viewer)
+    {
+        if (scavenger.PlayerHasImmunity(viewer))
+        {
+            return true;
+        }
+
+        var rel = PlayerRel(scavenger, viewer);
+        if (rel == null || scavenger.AI == null)
+        {
+            return false;
+        }
+
+        return rel.currentRelationship.type == CreatureTemplate.Relationship.Type.Pack
+            || scavenger.AI.LikeOfPlayer(rel) >= 0.8f;
+    }
+
+    private static RelationshipTracker.DynamicRelationship? PlayerRel(Scavenger scavenger, Player viewer)
+    {
+        var apo = viewer.abstractCreature;
+        var tracker = scavenger.AI?.tracker;
+        if (tracker == null || apo == null)
+        {
+            return null;
+        }
+
+        return tracker.RepresentationForCreature(apo, false)?.dynamicRelationship;
     }
 
     private static bool PupHostile(Player pup, Player viewer)
