@@ -69,7 +69,11 @@ internal static class IconLookup
             logKey: type.value);
     }
 
-    internal static IconDraw FoodResult() => FromNames(FoodSprite, Color.white, logKey: FoodSprite);
+    internal static IconDraw Bomb() =>
+        FromItemType(AbstractPhysicalObject.AbstractObjectType.ScavengerBomb, 0);
+
+    internal static IconDraw FoodResult() =>
+        FromNames(FoodSprite, Color.white, logKey: "food");
 
     internal static string PlaceholderElement() =>
         HasElement(PlaceholderSprite) ? PlaceholderSprite : FallbackSprite;

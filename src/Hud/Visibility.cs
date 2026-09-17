@@ -5,9 +5,9 @@ namespace MoreSlugHUD;
 
 internal static class Visibility
 {
-    internal static string? HideHud(HUD.HUD hud, Player? player, RainWorldGame? game, HudLayer layer)
+    internal static string? HideHud(HUD.HUD hud, Player? player, RainWorldGame? game, HudFeatureId feature)
     {
-        if (!FeatureEnabled(layer))
+        if (!FeatureEnabled(feature))
         {
             return "disabled";
         }
@@ -28,7 +28,7 @@ internal static class Visibility
             return "no-player";
         }
 
-        if (!SessionVisibility.IsVisible(player, layer))
+        if (!SessionVisibility.IsVisible(player, feature))
         {
             return "toggled-off";
         }
@@ -99,7 +99,7 @@ internal static class Visibility
         return camera?.hud?.textPrompt is not { gameOverMode: true };
     }
 
-    internal static void PollToggle(Player? player, PlayerKeybind? key, HudLayer layer, bool featureOn, string errorKey)
+    internal static void PollToggle(Player? player, PlayerKeybind? key, HudFeatureId feature, bool featureOn, string errorKey)
     {
         if (player == null || !featureOn || key == null)
         {
@@ -110,19 +110,19 @@ internal static class Visibility
         {
             if (player.JustPressed(key))
             {
-                SessionVisibility.Toggle(player, layer);
+                SessionVisibility.Toggle(player, feature);
             }
         }
         catch (Exception exception)
         {
-            MoreSlugHUDLog.ErrorOnce(errorKey, $"{layer} toggle key failed", exception);
+            MoreSlugHUDLog.ErrorOnce(errorKey, $"{feature} toggle key failed", exception);
         }
     }
 
-    private static bool FeatureEnabled(HudLayer layer) => layer switch
+    private static bool FeatureEnabled(HudFeatureId feature) => feature switch
     {
-        HudLayer.Id => MoreSlugHUDConfig.IdAttachable,
-        HudLayer.History => InputHistoryConfig.Enabled,
+        HudFeatureId.CreatureLabels => MoreSlugHUDConfig.IdAttachable,
+        HudFeatureId.InputHistory => InputHistoryConfig.Enabled,
         _ => MoreSlugHUDConfig.Enabled,
     };
 }

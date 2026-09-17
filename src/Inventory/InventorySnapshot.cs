@@ -21,6 +21,11 @@ internal struct SlotContent
     internal SlotId Id;
     internal bool OccupiesLayout;
     internal bool ShowPlaceholder;
+    internal bool IsPickUpCandidate;
+    internal int PyroHeat;
+    internal int PyroCapacity;
+    internal float PyroCooldown;
+    internal float PyroFill;
     internal float ContentAlpha;
     internal int StackCount;
     internal IconDraw Icon0;
@@ -52,6 +57,7 @@ internal sealed class InventorySnapshot
     internal SlotContent Right;
     internal SlotContent Stomach;
     internal SlotContent Back;
+    internal SlotContent Pyro;
 
     internal SlotContent this[SlotId id] => id switch
     {
@@ -60,39 +66,9 @@ internal sealed class InventorySnapshot
         SlotId.Right => Right,
         SlotId.Stomach => Stomach,
         SlotId.Back => Back,
+        SlotId.Pyro => Pyro,
         _ => SlotContent.Hidden(id),
     };
-
-    internal int CopyOccupying(SlotId[] dest)
-    {
-        var count = 0;
-        if (Craft.OccupiesLayout)
-        {
-            dest[count++] = SlotId.Craft;
-        }
-
-        if (Left.OccupiesLayout)
-        {
-            dest[count++] = SlotId.Left;
-        }
-
-        if (Right.OccupiesLayout)
-        {
-            dest[count++] = SlotId.Right;
-        }
-
-        if (Stomach.OccupiesLayout)
-        {
-            dest[count++] = SlotId.Stomach;
-        }
-
-        if (Back.OccupiesLayout)
-        {
-            dest[count++] = SlotId.Back;
-        }
-
-        return count;
-    }
 
     internal int ContentStamp()
     {
@@ -102,7 +78,8 @@ internal sealed class InventorySnapshot
             hash = hash * 31 + SlotStamp(Left);
             hash = hash * 31 + SlotStamp(Right);
             hash = hash * 31 + SlotStamp(Stomach);
-            return hash * 31 + SlotStamp(Back);
+            hash = hash * 31 + SlotStamp(Back);
+            return hash * 31 + SlotStamp(Pyro);
         }
     }
 
@@ -118,6 +95,13 @@ internal sealed class InventorySnapshot
         {
             hash = hash * 31 + 1;
         }
+
+        if (content.IsPickUpCandidate)
+        {
+            hash = hash * 31 + 2;
+        }
+
+        hash = hash * 31 + content.PyroHeat;
 
         if (content.StackCount > 0)
         {

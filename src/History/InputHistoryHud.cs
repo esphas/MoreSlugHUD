@@ -14,23 +14,6 @@ internal sealed class InputHistoryHud : HudPart
         EnsureRows(InputHistoryConfig.EffectiveMaxRows);
     }
 
-    public override void Update()
-    {
-        base.Update();
-        if (!MoreSlugHUDPlugin.Active)
-        {
-            return;
-        }
-
-        var player = LocalPlayerBinder.Bind(hud);
-        Visibility.PollToggle(
-            player,
-            MoreSlugHUDPlugin.ToggleHistoryKeybind,
-            HudLayer.History,
-            InputHistoryConfig.Enabled,
-            "history-toggle");
-    }
-
     public override void Draw(float timeStacker)
     {
         base.Draw(timeStacker);
@@ -62,7 +45,7 @@ internal sealed class InputHistoryHud : HudPart
             PlayerTimelines.TryGet(player, out timeline);
         }
 
-        if (timeline == null || Visibility.HideHud(hud, player, game, HudLayer.History) != null)
+        if (timeline == null || Visibility.HideHud(hud, player, game, HudFeatureId.InputHistory) != null)
         {
             HideAll();
             return;
@@ -71,7 +54,7 @@ internal sealed class InputHistoryHud : HudPart
         var screen = hud.rainWorld.options.ScreenSize;
         var safe = hud.rainWorld.options.SafeScreenOffset;
         InputHistoryConfig.ResolveAnchor(screen, safe, out var x, out var y, out var alignLeft);
-        var left = alignLeft ? x : x - HudIcons.RowWidth;
+        var left = alignLeft ? x : x - HistoryLayout.RowWidth;
 
         for (var i = 0; i < _rows.Length; i++)
         {

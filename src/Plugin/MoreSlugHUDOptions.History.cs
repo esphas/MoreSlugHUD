@@ -57,26 +57,21 @@ public sealed partial class MoreSlugHUDOptions
         _historyLockables.Clear();
         _historyLockLabels.Clear();
         var tab = new OpTab(this, L(LocKeys.OptionsTabHistory));
-        const float labelX = 40f;
-        const float controlX = 155f;
-        const float col2 = 310f;
-        const float control2 = 430f;
-        var items = new List<UIelement>();
-        var y = 540f;
+        var page = new SettingsPageBuilder(controlX: 155f, col2: 310f);
+        var labelX = SettingsPageBuilder.LabelX;
 
-        var enabled = new OpCheckBox(HistoryEnabled, new Vector2(labelX, y));
-        var enabledLabel = new OpLabel(75f, y + 3f, L(LocKeys.OptionsHistoryEnabled));
+        var enabled = new OpCheckBox(HistoryEnabled, new Vector2(labelX, page.Y));
+        var enabledLabel = new OpLabel(75f, page.Y + 3f, L(LocKeys.OptionsHistoryEnabled));
         Hint(enabled, enabledLabel, LocKeys.OptionsHistoryEnabledHint);
         enabled.OnValueChanged += (_, _, _) => RefreshLocks();
-        items.Add(enabled);
-        items.Add(enabledLabel);
-        y -= 38f;
-        items.Add(Wrapped(labelX, y, 520f, L(LocKeys.OptionsHistoryToggleHint)));
-        y -= 42f;
+        page.Add(enabled, enabledLabel);
+        page.Advance(SettingsPageBuilder.Row);
+        _historyToggleHint = page.Wrapped(520f, ToggleHintText(MoreSlugHUDPlugin.ToggleHistoryKeybind));
+        page.Advance(SettingsPageBuilder.Row);
 
         var side = RaiseCombo(new OpComboBox(
             HistorySide,
-            new Vector2(controlX, y),
+            new Vector2(page.ControlX, page.Y),
             120f,
             new List<ListItem>
             {
@@ -86,11 +81,11 @@ public sealed partial class MoreSlugHUDOptions
         {
             listHeight = 2,
         });
-        var sideLabel = new OpLabel(labelX, y + 5f, L(LocKeys.OptionsHistorySide));
+        var sideLabel = new OpLabel(labelX, page.Y + 5f, L(LocKeys.OptionsHistorySide));
         Hint(side, sideLabel, LocKeys.OptionsHistorySideHint);
         var density = RaiseCombo(new OpComboBox(
             HistoryDensity,
-            new Vector2(control2, y),
+            new Vector2(page.Control2, page.Y),
             120f,
             new List<ListItem>
             {
@@ -100,37 +95,37 @@ public sealed partial class MoreSlugHUDOptions
         {
             listHeight = 2,
         });
-        var densityLabel = new OpLabel(col2, y + 5f, L(LocKeys.OptionsHistoryDensity));
-        Lock(items, side, sideLabel);
-        Lock(items, density, densityLabel);
-        y -= 40f;
+        var densityLabel = new OpLabel(page.Col2, page.Y + 5f, L(LocKeys.OptionsHistoryDensity));
+        Lock(page.Items, side, sideLabel);
+        Lock(page.Items, density, densityLabel);
+        page.Advance(SettingsPageBuilder.Row);
 
-        var maxRows = new OpUpdown(HistoryMaxRows, new Vector2(controlX, y), 80f);
-        var maxRowsLabel = new OpLabel(labelX, y + 5f, L(LocKeys.OptionsHistoryMaxRows));
-        var opacity = new OpFloatSlider(HistoryOpacity, new Vector2(control2, y + 3f), 120, 2);
-        var opacityLabel = new OpLabel(col2, y + 5f, L(LocKeys.OptionsHistoryOpacity));
-        Lock(items, maxRows, maxRowsLabel);
-        Lock(items, opacity, opacityLabel);
-        y -= 40f;
+        var maxRows = new OpUpdown(HistoryMaxRows, new Vector2(page.ControlX, page.Y), 80f);
+        var maxRowsLabel = new OpLabel(labelX, page.Y + 5f, L(LocKeys.OptionsHistoryMaxRows));
+        var opacity = new OpFloatSlider(HistoryOpacity, new Vector2(page.Control2, page.Y + 3f), 120, 2);
+        var opacityLabel = new OpLabel(page.Col2, page.Y + 5f, L(LocKeys.OptionsHistoryOpacity));
+        Lock(page.Items, maxRows, maxRowsLabel);
+        Lock(page.Items, opacity, opacityLabel);
+        page.Advance(SettingsPageBuilder.Row);
 
-        var letters = Check(HistoryLetters, labelX, y, LocKeys.OptionsHistoryLetters, out var lettersLabel);
+        var letters = Check(HistoryLetters, labelX, page.Y, LocKeys.OptionsHistoryLetters, out var lettersLabel);
         Hint(letters, lettersLabel, LocKeys.OptionsHistoryLettersHint);
-        Lock(items, letters, lettersLabel);
-        y -= 36f;
+        Lock(page.Items, letters, lettersLabel);
+        page.Advance(SettingsPageBuilder.Row);
 
         _directionLegend = AddTrackRow(
-            items, HistoryTrackDirection, LocKeys.OptionsHistoryTrackDirection, y, iconsOnly: true,
+            page.Items, HistoryTrackDirection, LocKeys.OptionsHistoryTrackDirection, page.Y, iconsOnly: true,
             HudIcons.DirectionElements, null, null, 3);
-        y -= 34f;
+        page.Advance(SettingsPageBuilder.Row);
         _actionLegend = AddTrackRow(
-            items, HistoryTrackActions, LocKeys.OptionsHistoryTrackActions, y, iconsOnly: false,
-            HudIcons.ActionElements, HudIcons.ActionLetters, LocKeys.HistoryActions, 1);
-        y -= 34f;
+            page.Items, HistoryTrackActions, LocKeys.OptionsHistoryTrackActions, page.Y, iconsOnly: false,
+            HistoryActionCatalog.Elements, HistoryActionCatalog.Letters, HistoryActionCatalog.HintKeys, 1);
+        page.Advance(SettingsPageBuilder.Row);
         _stateLegend = AddTrackRow(
-            items, HistoryTrackStates, LocKeys.OptionsHistoryTrackStates, y, iconsOnly: false,
-            HudIcons.StateElements, HudIcons.StateLetters, LocKeys.HistoryStates, 2);
+            page.Items, HistoryTrackStates, LocKeys.OptionsHistoryTrackStates, page.Y, iconsOnly: false,
+            MovementTagCatalog.Elements, MovementTagCatalog.Letters, MovementTagCatalog.HintKeys, 2);
 
-        tab.AddItems(items.ToArray());
+        tab.AddItems(page.Items.ToArray());
         HideLegends();
         return tab;
     }
@@ -251,8 +246,8 @@ public sealed partial class MoreSlugHUDOptions
                 {
                     const float cell = 22f;
                     const float pad = 8f;
-                    var ix = pos.x + pad + col * cell + (cell - HudIcons.Slot) * 0.5f;
-                    var iy = pos.y + size.y - pad - (row + 1) * cell + (cell - HudIcons.Slot) * 0.5f;
+                    var ix = pos.x + pad + col * cell + (cell - HistoryLayout.Slot) * 0.5f;
+                    var iy = pos.y + size.y - pad - (row + 1) * cell + (cell - HistoryLayout.Slot) * 0.5f;
                     if (HudIcons.HasElement(elements[i]))
                     {
                         _items.Add(new OpImage(new Vector2(ix, iy), elements[i]));
@@ -266,7 +261,7 @@ public sealed partial class MoreSlugHUDOptions
                 if (HudIcons.HasElement(elements[i]))
                 {
                     _items.Add(new OpImage(new Vector2(x, y + 4f), elements[i]));
-                    x += HudIcons.Slot + 4f;
+                    x += HistoryLayout.Slot + 4f;
                 }
 
                 if (letters != null && i < letters.Length)

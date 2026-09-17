@@ -26,55 +26,46 @@ internal static class IdLabelBars
 {
     internal static void Layout(
         bool enabled,
-        bool row,
-        bool bothLines,
-        bool showNumber,
-        bool showName,
-        float numberWidth,
-        float nameWidth,
-        float nameHeight,
-        float textWidth,
-        float rowWidth,
-        float numberY,
-        float nameY,
+        in CreatureLabelPlacement placement,
+        in CreatureLabelMetrics metrics,
         out IdLabelBar number,
         out IdLabelBar name)
     {
         number = IdLabelBar.Hidden;
         name = IdLabelBar.Hidden;
-        if (!enabled || (!showNumber && !showName))
+        if (!enabled || (!placement.ShowNumber && !placement.ShowName))
         {
             return;
         }
 
-        if (bothLines)
+        if (placement.BothLines)
         {
-            if (showNumber)
+            if (placement.ShowNumber)
             {
-                number = Bar(numberWidth, MoreSlugHUDConfig.IdBarHeight, 0f, numberY);
+                number = Bar(metrics.NumberWidth, MoreSlugHUDConfig.IdBarHeight, 0f, placement.NumberY);
             }
 
-            if (showName)
+            if (placement.ShowName)
             {
-                name = Bar(nameWidth, nameHeight + 6f, 0f, nameY);
+                name = Bar(metrics.NameWidth, metrics.NameHeight + 6f, 0f, placement.NameY);
             }
 
             return;
         }
 
         var height = 0f;
-        if (showNumber)
+        if (placement.ShowNumber)
         {
             height = MoreSlugHUDConfig.IdBarHeight;
         }
 
-        if (showName)
+        if (placement.ShowName)
         {
-            height = Mathf.Max(height, nameHeight + 6f);
+            height = Mathf.Max(height, metrics.NameHeight + 6f);
         }
 
-        var width = row ? textWidth : showNumber ? numberWidth : nameWidth;
-        var x = row ? -rowWidth * 0.5f + textWidth * 0.5f : 0f;
+        var width = placement.Row ? placement.TextWidth : placement.ShowNumber ? metrics.NumberWidth : metrics.NameWidth;
+        var x = placement.Row ? -placement.RowWidth * 0.5f + placement.TextWidth * 0.5f : 0f;
         number = Bar(width, height, x, 0f);
     }
 

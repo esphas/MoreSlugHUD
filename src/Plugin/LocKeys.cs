@@ -9,22 +9,30 @@ internal static class LocKeys
     internal const string OptionsTabId = "more_slug_hud.options.tab.id";
     internal const string OptionsSectionSlots = "more_slug_hud.options.section.slots";
     internal const string OptionsSectionLayout = "more_slug_hud.options.section.layout";
+    internal const string OptionsSectionMisc = "more_slug_hud.options.section.misc";
 
     internal const string OptionsEnabled = "more_slug_hud.options.enabled";
     internal const string OptionsEnabledHint = "more_slug_hud.options.enabled.hint";
     internal const string OptionsToggleHint = "more_slug_hud.options.toggle_hint";
+    internal const string OptionsToggleHintBound = "more_slug_hud.options.toggle_hint.bound";
+    internal const string OptionsToggleHintUnbound = "more_slug_hud.options.toggle_hint.unbound";
 
     internal const string OptionsShowLeft = "more_slug_hud.options.slot.left";
     internal const string OptionsShowRight = "more_slug_hud.options.slot.right";
     internal const string OptionsShowStomach = "more_slug_hud.options.slot.stomach";
     internal const string OptionsShowBack = "more_slug_hud.options.slot.back";
     internal const string OptionsShowCraft = "more_slug_hud.options.slot.craft";
+    internal const string OptionsShowPyro = "more_slug_hud.options.slot.pyro";
+    internal const string OptionsShowPyroHint = "more_slug_hud.options.slot.pyro.hint";
+    internal const string OptionsShowPickUpCandidate = "more_slug_hud.options.slot.pickup";
+    internal const string OptionsShowPickUpCandidateHint = "more_slug_hud.options.slot.pickup.hint";
+    internal const string OptionsSlotShow = "more_slug_hud.options.slot.show";
+    internal const string OptionsSlotShowHint = "more_slug_hud.options.slot.show.hint";
 
     internal const string OptionsStyle = "more_slug_hud.options.style";
+    internal const string OptionsStyleHint = "more_slug_hud.options.style.hint";
     internal const string OptionsStyleRow = "more_slug_hud.options.style.row";
-    internal const string OptionsStyleRowHint = "more_slug_hud.options.style.row.hint";
     internal const string OptionsStyleCross = "more_slug_hud.options.style.cross";
-    internal const string OptionsStyleCrossHint = "more_slug_hud.options.style.cross.hint";
     internal const string OptionsPosition = "more_slug_hud.options.position";
     internal const string OptionsPositionHint = "more_slug_hud.options.position.hint";
     internal const string OptionsPositionBottomCenter = "more_slug_hud.options.position.bottom_center";
@@ -33,10 +41,13 @@ internal static class LocKeys
     internal const string OptionsPositionTopRight = "more_slug_hud.options.position.top_right";
     internal const string OptionsPositionBottomRight = "more_slug_hud.options.position.bottom_right";
     internal const string OptionsPositionCustom = "more_slug_hud.options.position.custom";
-    internal const string OptionsCustomX = "more_slug_hud.options.custom_x";
     internal const string OptionsCustomXHint = "more_slug_hud.options.custom_x.hint";
-    internal const string OptionsCustomY = "more_slug_hud.options.custom_y";
     internal const string OptionsCustomYHint = "more_slug_hud.options.custom_y.hint";
+    internal const string OptionsLayoutCanvasHint = "more_slug_hud.options.layout.canvas_hint";
+    internal const string OptionsLayoutOffScreen = "more_slug_hud.options.layout.off_screen";
+    internal const string OptionsLayoutOverlapHud = "more_slug_hud.options.layout.overlap_hud";
+    internal const string OptionsStyleCustom = "more_slug_hud.options.style.custom";
+    internal const string OptionsPositionCanvasHint = "more_slug_hud.options.position.canvas_hint";
 
     internal const string OptionsIdEnabled = "more_slug_hud.options.id.enabled";
     internal const string OptionsIdEnabledHint = "more_slug_hud.options.id.enabled.hint";
@@ -55,7 +66,6 @@ internal static class LocKeys
     internal const string OptionsIdArrangeStackHint = "more_slug_hud.options.id.arrange.stack.hint";
     internal const string OptionsIdArrangeCycle = "more_slug_hud.options.id.arrange.cycle";
     internal const string OptionsIdArrangeCycleHint = "more_slug_hud.options.id.arrange.cycle.hint";
-    internal const string OptionsIdToggleHint = "more_slug_hud.options.id.toggle_hint";
     internal const string OptionsFamiliarity = "more_slug_hud.options.id.familiarity";
     internal const string OptionsFamiliarityHint = "more_slug_hud.options.id.familiarity.hint";
     internal const string OptionsIdStrictWatch = "more_slug_hud.options.id.strict_watch";
@@ -68,7 +78,6 @@ internal static class LocKeys
     internal const string OptionsTabHistory = "more_slug_hud.options.tab.history";
     internal const string OptionsHistoryEnabled = "more_slug_hud.options.history.enabled";
     internal const string OptionsHistoryEnabledHint = "more_slug_hud.options.history.enabled.hint";
-    internal const string OptionsHistoryToggleHint = "more_slug_hud.options.history.toggle_hint";
     internal const string OptionsHistorySide = "more_slug_hud.options.history.side";
     internal const string OptionsHistorySideHint = "more_slug_hud.options.history.side.hint";
     internal const string OptionsHistorySideLeft = "more_slug_hud.options.history.side.left";

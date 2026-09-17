@@ -54,35 +54,32 @@ public sealed partial class MoreSlugHUDOptions
         _idLockables.Clear();
         _idLockLabels.Clear();
         var tab = new OpTab(this, L(LocKeys.OptionsTabId));
-        const float labelX = 40f;
-        var items = new List<UIelement>();
-        var y = 540f;
-        var enabled = new OpCheckBox(IdEnabled, new Vector2(labelX, y));
-        var enabledLabel = new OpLabel(75f, y + 3f, L(LocKeys.OptionsIdEnabled));
+        var page = new SettingsPageBuilder();
+        var labelX = SettingsPageBuilder.LabelX;
+        var enabled = new OpCheckBox(IdEnabled, new Vector2(labelX, page.Y));
+        var enabledLabel = new OpLabel(75f, page.Y + 3f, L(LocKeys.OptionsIdEnabled));
         Hint(enabled, enabledLabel, LocKeys.OptionsIdEnabledHint);
         enabled.OnValueChanged += (_, _, _) => RefreshLocks();
-        items.Add(enabled);
-        items.Add(enabledLabel);
-        y -= 38f;
-        items.Add(Wrapped(labelX, y, 520f, L(LocKeys.OptionsIdToggleHint)));
-        y -= 52f;
-        var showId = Check(ShowId, labelX, y, LocKeys.OptionsShowId, out var showIdLabel);
-        var showName = Check(ShowName, 300f, y, LocKeys.OptionsShowName, out var showNameLabel);
+        page.Add(enabled, enabledLabel);
+        page.Advance(SettingsPageBuilder.Row);
+        _idToggleHint = page.Wrapped(520f, ToggleHintText(MoreSlugHUDPlugin.ToggleIdKeybind));
+        page.Advance(SettingsPageBuilder.Row);
+        var showId = Check(ShowId, labelX, page.Y, LocKeys.OptionsShowId, out var showIdLabel);
+        var showName = Check(ShowName, page.Col2, page.Y, LocKeys.OptionsShowName, out var showNameLabel);
         Hint(showName, showNameLabel, LocKeys.OptionsShowNameHint);
-        LockId(items, showId, showIdLabel);
-        LockId(items, showName, showNameLabel);
-        y -= 34f;
-        var showIntent = Check(ShowIntent, labelX, y, LocKeys.OptionsShowIntent, out var showIntentLabel);
+        LockId(page.Items, showId, showIdLabel);
+        LockId(page.Items, showName, showNameLabel);
+        page.Advance(SettingsPageBuilder.Row);
+        var showIntent = Check(ShowIntent, labelX, page.Y, LocKeys.OptionsShowIntent, out var showIntentLabel);
         Hint(showIntent, showIntentLabel, LocKeys.OptionsShowIntentHint);
-        var showBackground = Check(ShowLabelBackground, 300f, y, LocKeys.OptionsShowLabelBackground, out var showBackgroundLabel);
+        var showBackground = Check(ShowLabelBackground, page.Col2, page.Y, LocKeys.OptionsShowLabelBackground, out var showBackgroundLabel);
         Hint(showBackground, showBackgroundLabel, LocKeys.OptionsShowLabelBackgroundHint);
-        LockId(items, showIntent, showIntentLabel);
-        LockId(items, showBackground, showBackgroundLabel);
-        y -= 44f;
-        const float controlX = 220f;
+        LockId(page.Items, showIntent, showIntentLabel);
+        LockId(page.Items, showBackground, showBackgroundLabel);
+        page.Advance(SettingsPageBuilder.Row);
         var arrange = RaiseCombo(new OpComboBox(
             IdArrange,
-            new Vector2(controlX, y),
+            new Vector2(page.ControlX, page.Y),
             180f,
             new List<ListItem>
             {
@@ -93,27 +90,27 @@ public sealed partial class MoreSlugHUDOptions
         {
             listHeight = 3,
         });
-        var arrangeLabel = new OpLabel(labelX, y + 5f, L(LocKeys.OptionsIdArrange));
+        var arrangeLabel = new OpLabel(labelX, page.Y + 5f, L(LocKeys.OptionsIdArrange));
         Hint(arrange, arrangeLabel, LocKeys.OptionsIdArrangeHint);
-        LockId(items, arrange, arrangeLabel);
-        y -= 72f;
-        var familiarity = new OpSlider(FamiliarityThreshold, new Vector2(labelX, y), 520);
-        var familiarityLabel = new OpLabel(labelX, y + 34f, L(LocKeys.OptionsFamiliarity));
+        LockId(page.Items, arrange, arrangeLabel);
+        page.Advance(SettingsPageBuilder.Row * 2f);
+        var familiarity = new OpSlider(FamiliarityThreshold, new Vector2(labelX, page.Y), 520);
+        var familiarityLabel = new OpLabel(labelX, page.Y + 34f, L(LocKeys.OptionsFamiliarity));
         Hint(familiarity, familiarityLabel, LocKeys.OptionsFamiliarityHint);
-        LockId(items, familiarity, familiarityLabel);
-        y -= 44f;
-        var strictWatch = Check(IdStrictWatch, labelX, y, LocKeys.OptionsIdStrictWatch, out var strictWatchLabel);
+        LockId(page.Items, familiarity, familiarityLabel);
+        page.Advance(SettingsPageBuilder.Row);
+        var strictWatch = Check(IdStrictWatch, labelX, page.Y, LocKeys.OptionsIdStrictWatch, out var strictWatchLabel);
         Hint(strictWatch, strictWatchLabel, LocKeys.OptionsIdStrictWatchHint);
-        LockId(items, strictWatch, strictWatchLabel);
-        y -= 38f;
-        var watchSeconds = new OpUpdown(IdWatchSeconds, new Vector2(controlX, y), 80f);
-        var watchSecondsLabel = new OpLabel(labelX, y + 5f, L(LocKeys.OptionsIdWatchSeconds));
+        LockId(page.Items, strictWatch, strictWatchLabel);
+        page.Advance(SettingsPageBuilder.Row);
+        var watchSeconds = new OpUpdown(IdWatchSeconds, new Vector2(page.ControlX, page.Y), 80f);
+        var watchSecondsLabel = new OpLabel(labelX, page.Y + 5f, L(LocKeys.OptionsIdWatchSeconds));
         Hint(watchSeconds, watchSecondsLabel, LocKeys.OptionsIdWatchSecondsHint);
-        LockId(items, watchSeconds, watchSecondsLabel);
-        y -= 40f;
-        var showDead = Check(ShowDead, labelX, y, LocKeys.OptionsShowDead, out var showDeadLabel);
-        LockId(items, showDead, showDeadLabel);
-        tab.AddItems(items.ToArray());
+        LockId(page.Items, watchSeconds, watchSecondsLabel);
+        page.Advance(SettingsPageBuilder.Row);
+        var showDead = Check(ShowDead, labelX, page.Y, LocKeys.OptionsShowDead, out var showDeadLabel);
+        LockId(page.Items, showDead, showDeadLabel);
+        tab.AddItems(page.Items.ToArray());
         return tab;
     }
 

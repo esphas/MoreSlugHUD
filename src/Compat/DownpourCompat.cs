@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using HUD;
 using RWCustom;
 using UnityEngine;
 
@@ -14,7 +12,6 @@ internal static class DownpourCompat
     private static MethodInfo? _creatureData;
     private static PropertyInfo? _expeditionUnlocks;
     private static FieldInfo? _npcStomach;
-    private static readonly Dictionary<Type, FieldInfo?> PulsePos = new();
     private static readonly object[] ComboArgs = new object[2];
     private static int _comboBusy;
     private static bool _unlockCached;
@@ -37,7 +34,6 @@ internal static class DownpourCompat
         _unlockClock = int.MinValue;
         _unlockHas = false;
         _unlockRetryAt = 0f;
-        PulsePos.Clear();
     }
 
     internal static void Probe()
@@ -75,6 +71,51 @@ internal static class DownpourCompat
 
     internal static bool IsArtificer(Player player) =>
         ModManager.MSC && player.SlugCatClass?.value == "Artificer";
+
+    internal static bool HasPyroMechanics(Player player)
+    {
+        if (!ModManager.MSC || player.isSlugpup)
+        {
+            return false;
+        }
+
+        if (IsArtificer(player))
+        {
+            return true;
+        }
+
+        if (!ModManager.Expedition)
+        {
+            return false;
+        }
+
+        try
+        {
+            return Expedition.ExpeditionGame.explosivejump;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    internal static int ExplosionCapacity()
+    {
+        if (!ModManager.MSC)
+        {
+            return 10;
+        }
+
+        try
+        {
+            var value = MoreSlugcats.MoreSlugcats.cfgArtificerExplosionCapacity?.Value ?? 10;
+            return Mathf.Max(1, value);
+        }
+        catch
+        {
+            return 10;
+        }
+    }
 
     internal static bool IsGourmand(Player player) =>
         ModManager.MSC && player.SlugCatClass?.value == "Gourmand";
@@ -214,51 +255,5 @@ internal static class DownpourCompat
             MoreSlugHUDLog.Error("PlayerNPCState stomach read failed", exception);
             return null;
         }
-    }
-
-    internal static float PulseBandTop(HUD.HUD hud)
-    {
-        var parts = hud.parts;
-        if (parts == null)
-        {
-            return 0f;
-        }
-
-        var top = 0f;
-        var extent = MoreSlugHUDConfig.BottomPulseExtent;
-        for (var i = 0; i < parts.Count; i++)
-        {
-            if (TryPulsePos(parts[i], out var pos))
-            {
-                top = Mathf.Max(top, pos.y + extent);
-            }
-        }
-
-        return top;
-    }
-
-    private static bool TryPulsePos(HudPart part, out Vector2 pos)
-    {
-        pos = default;
-        var type = part.GetType();
-        var name = type.Name;
-        if (name != "BreathMeter" && name != "ThreatPulser")
-        {
-            return false;
-        }
-
-        if (!PulsePos.TryGetValue(type, out var field))
-        {
-            field = type.GetField("pos", BindingFlags.Public | BindingFlags.Instance);
-            PulsePos[type] = field;
-        }
-
-        if (field?.GetValue(part) is Vector2 value)
-        {
-            pos = value;
-            return true;
-        }
-
-        return false;
     }
 }

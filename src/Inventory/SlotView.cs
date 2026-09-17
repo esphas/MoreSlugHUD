@@ -1,11 +1,21 @@
+using RWCustom;
 using UnityEngine;
 
 namespace MoreSlugHUD;
 
 internal sealed class SlotView
 {
+    private const int RingSegments = 24;
+    private const float RingInner = 13f;
+    private const float RingOuter = 16f;
+
+    private readonly FContainer _container;
     private readonly FSprite _placeholder;
     private readonly FSprite[] _content;
+    private TriangleMesh? _pyroTrack;
+    private TriangleMesh? _pyroFill;
+    private FSprite? _pyroIcon;
+    private FLabel? _pyroLabel;
     private string? _last0;
     private string? _last1;
     private string? _last2;
@@ -15,6 +25,7 @@ internal sealed class SlotView
 
     internal SlotView(FContainer container)
     {
+        _container = container;
         _placeholder = CreateSprite(container);
         _content = new FSprite[MoreSlugHUDConfig.MaxStack];
         for (var i = 0; i < _content.Length; i++)
@@ -36,6 +47,16 @@ internal sealed class SlotView
             Hide();
             return;
         }
+
+        if (slot.Id == SlotId.Pyro)
+        {
+            HideContent();
+            _placeholder.isVisible = false;
+            DrawPyro(slot, position);
+            return;
+        }
+
+        HidePyro();
 
         if (slot.ShowPlaceholder)
         {
@@ -81,6 +102,7 @@ internal sealed class SlotView
             sprite.rotation = 0f;
             sprite.scale = FitScale(sprite, MoreSlugHUDConfig.SlotSize * icon.Scale);
             sprite.alpha = slot.ContentAlpha;
+            ApplyIconShader(sprite, slot.IsPickUpCandidate);
             sprite.isVisible = true;
         }
     }
@@ -96,6 +118,7 @@ internal sealed class SlotView
     {
         _placeholder.isVisible = false;
         HideContent();
+        HidePyro();
         _lastCount = -1;
         _last0 = null;
         _last1 = null;
@@ -109,6 +132,11 @@ internal sealed class SlotView
         {
             _content[i].RemoveFromContainer();
         }
+
+        _pyroTrack?.RemoveFromContainer();
+        _pyroFill?.RemoveFromContainer();
+        _pyroIcon?.RemoveFromContainer();
+        _pyroLabel?.RemoveFromContainer();
     }
 
     private void DrawPlaceholder(SlotId id, Vector2 position)
@@ -125,7 +153,129 @@ internal sealed class SlotView
     {
         for (var i = 0; i < _content.Length; i++)
         {
+            ApplyIconShader(_content[i], candidate: false);
             _content[i].isVisible = false;
+        }
+    }
+
+    private static void ApplyIconShader(FSprite sprite, bool candidate)
+    {
+        var shaders = RWCustom.Custom.rainWorld?.Shaders;
+        if (shaders == null)
+        {
+            return;
+        }
+
+        if (candidate && shaders.TryGetValue("GateHologram", out var hologram))
+        {
+            sprite.shader = hologram;
+            return;
+        }
+
+        if (shaders.TryGetValue("Basic", out var basic))
+        {
+            sprite.shader = basic;
+        }
+    }
+
+    private void DrawPyro(SlotContent slot, Vector2 position)
+    {
+        EnsurePyro();
+        var remaining = Mathf.Max(0, slot.PyroCapacity - slot.PyroHeat);
+        var color = MoreSlugHUDConfig.PyroWarningColor(slot.PyroHeat, slot.PyroCapacity);
+        PlaceRing(_pyroTrack!, position, 1f);
+        _pyroTrack!.color = color;
+        _pyroTrack.alpha = 0.28f;
+        _pyroTrack.isVisible = true;
+        PlaceRing(_pyroFill!, position, slot.PyroFill);
+        _pyroFill!.color = color;
+        _pyroFill.alpha = 0.95f;
+        _pyroFill.isVisible = true;
+
+        var bomb = IconLookup.Bomb();
+        if (_pyroIcon!.element?.name != bomb.SpriteName)
+        {
+            _pyroIcon.SetElementByName(bomb.SpriteName);
+        }
+
+        _pyroIcon.color = color;
+        _pyroIcon.SetPosition(position);
+        _pyroIcon.rotation = 0f;
+        _pyroIcon.scale = FitScale(_pyroIcon, MoreSlugHUDConfig.SlotSize * 0.55f);
+        _pyroIcon.alpha = 1f;
+        _pyroIcon.isVisible = true;
+        _pyroLabel!.text = remaining.ToString();
+        _pyroLabel.color = color;
+        _pyroLabel.SetPosition(position + new Vector2(0f, -MoreSlugHUDConfig.SlotSize * 0.5f - 6f));
+        _pyroLabel.isVisible = true;
+    }
+
+    private void EnsurePyro()
+    {
+        if (_pyroTrack != null)
+        {
+            return;
+        }
+
+        _pyroTrack = MakeRing();
+        _pyroFill = MakeRing();
+        _container.AddChild(_pyroTrack);
+        _container.AddChild(_pyroFill);
+        _pyroIcon = CreateSprite(_container);
+        _pyroLabel = new FLabel(Custom.GetDisplayFont(), "0")
+        {
+            alignment = FLabelAlignment.Center,
+            scale = 0.7f,
+            isVisible = false,
+        };
+        _container.AddChild(_pyroLabel);
+    }
+
+    private void HidePyro()
+    {
+        if (_pyroTrack == null)
+        {
+            return;
+        }
+
+        _pyroTrack.isVisible = false;
+        _pyroFill!.isVisible = false;
+        _pyroIcon!.isVisible = false;
+        _pyroLabel!.isVisible = false;
+    }
+
+    private static TriangleMesh MakeRing()
+    {
+        var tris = new TriangleMesh.Triangle[RingSegments * 2];
+        for (var i = 0; i < RingSegments; i++)
+        {
+            var outer0 = i;
+            var outer1 = i + 1;
+            var inner0 = RingSegments + 1 + i;
+            var inner1 = RingSegments + 1 + i + 1;
+            tris[i * 2] = new TriangleMesh.Triangle(outer0, outer1, inner0);
+            tris[i * 2 + 1] = new TriangleMesh.Triangle(inner0, outer1, inner1);
+        }
+
+        var mesh = new TriangleMesh("Futile_White", tris, customColor: false)
+        {
+            isVisible = false,
+        };
+        mesh.SetPosition(0f, 0f);
+        return mesh;
+    }
+
+    private static void PlaceRing(TriangleMesh mesh, Vector2 center, float fill)
+    {
+        var shown = fill >= 0.999f ? RingSegments : Mathf.Max(0, Mathf.CeilToInt(fill * RingSegments));
+        for (var i = 0; i <= RingSegments; i++)
+        {
+            var t = i / (float)RingSegments;
+            var ang = t * Mathf.PI * 2f;
+            var dir = new Vector2(Mathf.Sin(ang), Mathf.Cos(ang));
+            var outer = i <= shown ? RingOuter : RingInner;
+            mesh.MoveVertice(i, center + dir * outer);
+            mesh.MoveVertice(RingSegments + 1 + i, center + dir * RingInner);
         }
     }
 

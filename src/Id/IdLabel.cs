@@ -128,7 +128,7 @@ internal sealed class IdLabel : CosmeticSprite
         viewer = rCam.hud != null ? LocalPlayerBinder.Bind(rCam.hud) : null;
         return MoreSlugHUDConfig.IdAttachable
             && viewer != null
-            && SessionVisibility.IsVisible(viewer, HudLayer.Id)
+            && SessionVisibility.IsVisible(viewer, HudFeatureId.CreatureLabels)
             && Visibility.HideWorld(rCam.hud, rCam, viewer, rCam.game) == null
             && room != null
             && room.BeingViewed

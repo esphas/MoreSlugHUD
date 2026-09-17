@@ -41,42 +41,34 @@ internal static class HudHooks
             return;
         }
 
-        var hasInventory = false;
-        var hasHistory = false;
+        TryAdd(hud, source, HudFeatures.ScreenHuds);
+    }
+
+    private static void TryAdd(HUD.HUD hud, string source, ScreenHudAttachment[] attachments)
+    {
+        for (var i = 0; i < attachments.Length; i++)
+        {
+            TryAdd(hud, source, attachments[i]);
+        }
+    }
+
+    private static void TryAdd(HUD.HUD hud, string source, ScreenHudAttachment attachment)
+    {
         for (var i = 0; i < hud.parts.Count; i++)
         {
-            if (hud.parts[i] is InventoryHud)
+            if (attachment.AlreadyAttached(hud.parts[i]))
             {
-                hasInventory = true;
-            }
-            else if (hud.parts[i] is InputHistoryHud)
-            {
-                hasHistory = true;
+                return;
             }
         }
 
-        if (!hasInventory)
+        try
         {
-            try
-            {
-                hud.AddPart(new InventoryHud(hud));
-            }
-            catch (Exception exception)
-            {
-                MoreSlugHUDLog.Error($"inventory HUD attach failed via {source}", exception);
-            }
+            hud.AddPart(attachment.Create(hud));
         }
-
-        if (!hasHistory)
+        catch (Exception exception)
         {
-            try
-            {
-                hud.AddPart(new InputHistoryHud(hud));
-            }
-            catch (Exception exception)
-            {
-                MoreSlugHUDLog.Error($"history HUD attach failed via {source}", exception);
-            }
+            MoreSlugHUDLog.Error($"{attachment.Name} HUD attach failed via {source}", exception);
         }
     }
 }

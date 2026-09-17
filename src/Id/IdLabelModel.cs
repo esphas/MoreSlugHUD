@@ -58,7 +58,7 @@ internal sealed class IdLabelModel
         for (var i = 0; i < IdObservers.PlayerCount; i++)
         {
             var viewer = IdObservers.PlayerAt(i);
-            _intents.Tick(ViewerKey(viewer), IdIntent.Read(creature, viewer), ref _shakeRng);
+            _intents.Tick(ViewerKey(viewer), CreatureIntentRules.Decide(creature, viewer).Kind, ref _shakeRng);
         }
     }
 

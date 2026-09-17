@@ -1,9 +1,13 @@
 using System;
+using System.Reflection;
 
 namespace MoreSlugHUD;
 
 internal static class InventoryReader
 {
+    private static FieldInfo? _pickUpCandidate;
+    private static bool _pickUpResolved;
+
     internal static void Read(Player player, InventorySnapshot snapshot, InventoryFailState fails)
     {
         var expedition = MoreSlugHUDConfig.ShowCraft
@@ -15,6 +19,7 @@ internal static class InventoryReader
         snapshot.Right = ReadGrasp(player, SlotId.Right, 1, fails);
         snapshot.Stomach = ReadStomach(player, fails);
         snapshot.Back = ReadBack(player, fails);
+        snapshot.Pyro = ReadPyro(player);
         try
         {
             ApplyTwoHandedHold(player, ref snapshot.Left, ref snapshot.Right, fails);
@@ -22,6 +27,15 @@ internal static class InventoryReader
         catch (Exception exception)
         {
             MoreSlugHUDLog.ErrorOnce("inventory-twohand", "two-hand hold failed", exception);
+        }
+
+        try
+        {
+            ApplyPickUpCandidate(player, snapshot, fails);
+        }
+        catch (Exception exception)
+        {
+            MoreSlugHUDLog.ErrorOnce("inventory-pickup", "pick-up candidate failed", exception);
         }
     }
 
@@ -39,8 +53,9 @@ internal static class InventoryReader
 
         try
         {
-            var icon = CraftPredictor.Predict(player, expeditionCrafting);
+            var prediction = CraftPredictor.Predict(player, expeditionCrafting);
             LogRecover(SlotId.Craft, fails.CraftSucceeded());
+            var icon = prediction.ToIcon();
             if (!icon.HasValue)
             {
                 return SlotContent.Hidden(SlotId.Craft);
@@ -127,6 +142,33 @@ internal static class InventoryReader
             }
 
             return Fallback(SlotId.Back);
+        }
+    }
+
+    private static SlotContent ReadPyro(Player player)
+    {
+        try
+        {
+            if (!MoreSlugHUDConfig.ShowPyro || !DownpourCompat.HasPyroMechanics(player))
+            {
+                return SlotContent.Hidden(SlotId.Pyro);
+            }
+
+            return new SlotContent
+            {
+                Id = SlotId.Pyro,
+                OccupiesLayout = true,
+                ShowPlaceholder = false,
+                ContentAlpha = 1f,
+                PyroHeat = player.pyroJumpCounter,
+                PyroCapacity = DownpourCompat.ExplosionCapacity(),
+                PyroCooldown = player.pyroJumpCooldown,
+            };
+        }
+        catch (Exception exception)
+        {
+            MoreSlugHUDLog.ErrorOnce("inventory-pyro", "pyro slot failed", exception);
+            return SlotContent.Hidden(SlotId.Pyro);
         }
     }
 
@@ -282,6 +324,146 @@ internal static class InventoryReader
         if (slot.HasContent)
         {
             slot.ContentAlpha = MoreSlugHUDConfig.OffHandAlpha;
+        }
+    }
+
+    private static void ApplyPickUpCandidate(Player player, InventorySnapshot snapshot, InventoryFailState fails)
+    {
+        if (!MoreSlugHUDConfig.ShowPickUpCandidate || player.inShortcut)
+        {
+            return;
+        }
+
+        var candidate = ReadPickUpCandidate(player);
+        var held = candidate?.abstractPhysicalObject;
+        if (candidate == null || held == null || AlreadyHeld(player, candidate, held))
+        {
+            return;
+        }
+
+        switch (PickupRules.Resolve(player, candidate))
+        {
+            case PickupDestination.Left:
+                FillPickUp(ref snapshot.Left, held, fails);
+                return;
+            case PickupDestination.Right:
+                FillPickUp(ref snapshot.Right, held, fails);
+                return;
+            case PickupDestination.Back:
+                FillPickUp(ref snapshot.Back, held, fails);
+                return;
+        }
+    }
+
+    private static PhysicalObject? ReadPickUpCandidate(Player player)
+    {
+        if (!_pickUpResolved)
+        {
+            _pickUpResolved = true;
+            try
+            {
+                _pickUpCandidate = typeof(Player).GetField(
+                    "pickUpCandidate",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+            }
+            catch (Exception exception)
+            {
+                MoreSlugHUDLog.ErrorOnce("inventory-pickup-field", "pick-up candidate field missing", exception);
+                return null;
+            }
+
+            if (_pickUpCandidate == null)
+            {
+                MoreSlugHUDLog.ErrorOnce("inventory-pickup-field", "pick-up candidate field missing");
+                return null;
+            }
+        }
+
+        if (_pickUpCandidate == null)
+        {
+            return null;
+        }
+
+        return _pickUpCandidate.GetValue(player) as PhysicalObject;
+    }
+
+    private static bool CanAcceptPreview(SlotContent slot) =>
+        slot.OccupiesLayout && (slot.Id != SlotId.Back || !slot.HasContent);
+
+    private static bool AlreadyHeld(Player player, PhysicalObject candidate, AbstractPhysicalObject held)
+    {
+        if (SameGrasp(player, 0, candidate, held) || SameGrasp(player, 1, candidate, held))
+        {
+            return true;
+        }
+
+        if (ReferenceEquals(player.objectInStomach, held))
+        {
+            return true;
+        }
+
+        var spear = player.spearOnBack?.spear;
+        if (SameObject(candidate, held, spear, spear?.abstractPhysicalObject))
+        {
+            return true;
+        }
+
+        var slug = player.slugOnBack?.slugcat;
+        if (SameObject(candidate, held, slug, slug?.abstractPhysicalObject))
+        {
+            return true;
+        }
+
+        var lizard = LizardOnBackAdapter.TryGetLizard(player);
+        return lizard != null && ReferenceEquals(lizard, held);
+    }
+
+    private static bool SameGrasp(Player player, int index, PhysicalObject candidate, AbstractPhysicalObject held)
+    {
+        if (player.grasps == null || index >= player.grasps.Length)
+        {
+            return false;
+        }
+
+        var grabbed = player.grasps[index]?.grabbed;
+        return SameObject(candidate, held, grabbed, grabbed?.abstractPhysicalObject);
+    }
+
+    private static bool SameObject(
+        PhysicalObject candidate,
+        AbstractPhysicalObject held,
+        PhysicalObject? other,
+        AbstractPhysicalObject? otherHeld)
+    {
+        return ReferenceEquals(candidate, other) || ReferenceEquals(held, otherHeld);
+    }
+
+    private static void FillPickUp(ref SlotContent slot, AbstractPhysicalObject held, InventoryFailState fails)
+    {
+        if (!CanAcceptPreview(slot) || fails.ShouldSkipPickup(slot.Id, held))
+        {
+            return;
+        }
+
+        try
+        {
+            var icon = IconLookup.FromObject(held);
+            LogRecover(slot.Id, fails.PickupSucceeded(slot.Id));
+            if (!icon.HasValue)
+            {
+                return;
+            }
+
+            var filled = Occupied(slot.Id, icon.Value, MoreSlugHUDConfig.PickUpCandidateAlpha);
+            filled.IsPickUpCandidate = true;
+            slot = filled;
+        }
+        catch (Exception exception)
+        {
+            if (fails.PickupFailed(slot.Id, held))
+            {
+                MoreSlugHUDLog.Error($"inventory pick-up {slot.Id} failed", exception);
+            }
         }
     }
 }

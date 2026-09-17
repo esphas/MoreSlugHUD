@@ -303,95 +303,24 @@ internal sealed class IdLabelView
         var glyphWidth = GlyphWidth();
         var intentState = showIntent ? model.PeekIntent(viewer) : IdIntentDrawState.Hidden;
         var intentWidth = PrepareIntent(top, showIntent, intentState.Shown, out var intent, out var intentLeftInset);
-        var row = MoreSlugHUDConfig.IdArrange == IdArrange.Row;
-        var bothLines = !row && showNumber && showName;
-        var line = nameHeight * 0.5f + 4f;
-        var numberY = bothLines ? line : 0f;
-        var nameY = bothLines ? -line : 0f;
-        var numberX = 0f;
-        var nameStartX = -nameWidth * 0.5f;
-        var intentX = 0f;
-        var intentY = 0f;
-        var textWidth = 0f;
-        if (showNumber)
-        {
-            textWidth += numberWidth;
-        }
-
-        if (showNumber && showName)
-        {
-            textWidth += MoreSlugHUDConfig.IdItemGap;
-        }
-
-        if (showName)
-        {
-            textWidth += nameWidth;
-        }
-
-        var rowWidth = textWidth;
-        if (row)
-        {
-            if (intent != null && (showNumber || showName))
-            {
-                rowWidth += MoreSlugHUDConfig.IdIntentGap + intentWidth;
-            }
-            else if (intent != null)
-            {
-                rowWidth += intentWidth;
-            }
-
-            var cursor = -rowWidth * 0.5f;
-            numberX = cursor + numberWidth * 0.5f;
-            if (showNumber)
-            {
-                cursor += numberWidth;
-            }
-
-            if (showName)
-            {
-                if (showNumber)
-                {
-                    cursor += MoreSlugHUDConfig.IdItemGap;
-                }
-
-                nameStartX = cursor;
-                cursor += nameWidth;
-            }
-
-            if (intent != null && (showNumber || showName))
-            {
-                cursor += MoreSlugHUDConfig.IdIntentGap;
-            }
-
-            intentX = cursor;
-            intentY = 0f;
-            numberY = 0f;
-            nameY = 0f;
-        }
-        else
-        {
-            numberX = 0f;
-            nameStartX = -nameWidth * 0.5f;
-            if (showNumber)
-            {
-                intentX = numberWidth * 0.5f + MoreSlugHUDConfig.IdIntentGap;
-                intentY = numberY;
-            }
-            else if (showName)
-            {
-                intentX = nameWidth * 0.5f + MoreSlugHUDConfig.IdIntentGap;
-                intentY = nameY;
-            }
-            else
-            {
-                intentX = -intentWidth * 0.5f;
-                intentY = 0f;
-            }
-        }
+        var metrics = new CreatureLabelMetrics(
+            showNumber,
+            showName,
+            intent != null,
+            numberWidth,
+            nameWidth,
+            nameHeight,
+            intentWidth,
+            advance);
+        var placement = CreatureLabelLayout.Arrange(
+            metrics,
+            MoreSlugHUDConfig.IdArrange,
+            MoreSlugHUDConfig.IdItemGap,
+            MoreSlugHUDConfig.IdIntentGap);
 
         if (text != null && showNumber)
         {
-            text.SetPosition(numberX, numberY);
+            text.SetPosition(placement.NumberX, placement.NumberY);
         }
 
         for (var i = 0; i < IdName.MaxLength; i++)
@@ -412,29 +341,22 @@ internal sealed class IdLabelView
             glyph.alpha = index < 0 ? 0f : index / 50f;
             glyph.scaleX = 15f / glyphWidth * glyphScale;
             glyph.scaleY = glyphScale;
-            glyph.SetPosition(nameStartX + i * advance, nameY);
+            glyph.SetPosition(placement.NameStartX + i * placement.GlyphAdvance, placement.NameY);
         }
 
         if (intent != null)
         {
-            intent.SetPosition(intentX - intentLeftInset + intentState.ShakeOffset.x, intentY + intentState.ShakeOffset.y);
+            intent.SetPosition(
+                placement.IntentX - intentLeftInset + intentState.ShakeOffset.x,
+                placement.IntentY + intentState.ShakeOffset.y);
         }
 
         if (top.GetChildAt(NumberBarChild) is FSprite numberBar && top.GetChildAt(NameBarChild) is FSprite nameBar)
         {
             IdLabelBars.Layout(
                 MoreSlugHUDConfig.ShowLabelBackground,
-                row,
-                bothLines,
-                showNumber,
-                showName,
-                numberWidth,
-                nameWidth,
-                nameHeight,
-                textWidth,
-                rowWidth,
-                numberY,
-                nameY,
+                placement,
+                metrics,
                 out var numberLayout,
                 out var nameLayout);
             PlaceBar(numberBar, numberLayout);
@@ -464,7 +386,7 @@ internal sealed class IdLabelView
             return 0f;
         }
 
-        var element = IdIntent.ElementOf(shown);
+        var element = IntentStyle.ElementOf(shown);
         if (!showIntent || !IconLookup.HasElement(element))
         {
             intent.isVisible = false;
@@ -473,8 +395,8 @@ internal sealed class IdLabelView
 
         intent.SetElementByName(element);
         var drawn = intent.element.sourceRect;
-        intent.scale = IdIntent.FitVisible(drawn.x, drawn.width, drawn.height, MoreSlugHUDConfig.IdIntentHeight, out var visibleWidth, out leftInset);
-        intent.color = IdIntent.ColorOf(shown);
+        intent.scale = IntentStyle.FitVisible(drawn.x, drawn.width, drawn.height, MoreSlugHUDConfig.IdIntentHeight, out var visibleWidth, out leftInset);
+        intent.color = IntentStyle.ColorOf(shown);
         intent.isVisible = true;
         intent.alpha = 1f;
         sprite = intent;

@@ -1,3 +1,5 @@
+using System;
+
 namespace MoreSlugHUD;
 
 internal static class PlayerInputHooks
@@ -15,6 +17,15 @@ internal static class PlayerInputHooks
     private static void Update(On.Player.orig_Update orig, Player self, bool eu)
     {
         orig(self, eu);
+        try
+        {
+            ToggleDispatcher.AfterPlayerUpdate(self);
+        }
+        catch (Exception exception)
+        {
+            MoreSlugHUDLog.ErrorOnce("toggle-dispatch", "toggle dispatch failed", exception);
+        }
+
         InputSampler.AfterPlayerUpdate(self);
     }
 }

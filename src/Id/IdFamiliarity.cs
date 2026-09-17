@@ -5,6 +5,9 @@ namespace MoreSlugHUD;
 
 internal static class IdFamiliarity
 {
+    internal const float SocialImpactWeight = 0.55f;
+    internal const float KnowledgeWeight = 0.45f;
+
     private static readonly Dictionary<WatchKey, float> Watch = new();
 
     internal static void Reset()
@@ -101,7 +104,7 @@ internal static class IdFamiliarity
             Mathf.Abs(rel.tempLike),
             Mathf.Abs(rel.fear),
             Mathf.Abs(rel.tempFear));
-        return Mathf.Clamp01(0.55f * impact + 0.45f * rel.know);
+        return Mathf.Clamp01(SocialImpactWeight * impact + KnowledgeWeight * rel.know);
     }
 
     private static float RecognizedScore(Creature creature, Player viewer)

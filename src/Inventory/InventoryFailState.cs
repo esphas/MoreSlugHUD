@@ -6,11 +6,17 @@ internal sealed class InventoryFailState
 {
     private const float SlotRetrySeconds = 2f;
 
-    internal readonly AbstractPhysicalObject?[] Objects = new AbstractPhysicalObject?[5];
-    private readonly float[] _heldRetryAt = new float[5];
-    private readonly bool[] _heldFailing = new bool[5];
-    private readonly int[] _heldAttempts = new int[5];
-    private readonly float[] _heldSince = new float[5];
+    internal readonly AbstractPhysicalObject?[] Objects = new AbstractPhysicalObject?[InventorySlots.Count];
+    private readonly float[] _heldRetryAt = new float[InventorySlots.Count];
+    private readonly bool[] _heldFailing = new bool[InventorySlots.Count];
+    private readonly int[] _heldAttempts = new int[InventorySlots.Count];
+    private readonly float[] _heldSince = new float[InventorySlots.Count];
+
+    private readonly AbstractPhysicalObject?[] _pickupObjects = new AbstractPhysicalObject?[InventorySlots.Count];
+    private readonly float[] _pickupRetryAt = new float[InventorySlots.Count];
+    private readonly bool[] _pickupFailing = new bool[InventorySlots.Count];
+    private readonly int[] _pickupAttempts = new int[InventorySlots.Count];
+    private readonly float[] _pickupSince = new float[InventorySlots.Count];
 
     private int _craftAttempts;
     private float _craftSince;
@@ -39,6 +45,11 @@ internal sealed class InventoryFailState
             _heldFailing[i] = false;
             _heldAttempts[i] = 0;
             _heldSince[i] = 0f;
+            _pickupObjects[i] = null;
+            _pickupRetryAt[i] = 0f;
+            _pickupFailing[i] = false;
+            _pickupAttempts[i] = 0;
+            _pickupSince[i] = 0f;
         }
 
         _craftBroken = false;
@@ -101,6 +112,51 @@ internal sealed class InventoryFailState
         _heldRetryAt[index] = Time.realtimeSinceStartup + SlotRetrySeconds;
         _heldFailing[index] = true;
         _heldAttempts[index]++;
+        return log;
+    }
+
+    internal bool ShouldSkipPickup(SlotId id, AbstractPhysicalObject? held)
+    {
+        if (held == null)
+        {
+            return false;
+        }
+
+        var index = (int)id;
+        if (!ReferenceEquals(_pickupObjects[index], held))
+        {
+            return false;
+        }
+
+        return Time.realtimeSinceStartup < _pickupRetryAt[index];
+    }
+
+    internal FailSummary PickupSucceeded(SlotId id)
+    {
+        var index = (int)id;
+        var summary = Summary(_pickupFailing[index], _pickupAttempts[index], _pickupSince[index]);
+        _pickupObjects[index] = null;
+        _pickupRetryAt[index] = 0f;
+        _pickupFailing[index] = false;
+        _pickupAttempts[index] = 0;
+        _pickupSince[index] = 0f;
+        return summary;
+    }
+
+    internal bool PickupFailed(SlotId id, AbstractPhysicalObject? held)
+    {
+        var index = (int)id;
+        var log = !_pickupFailing[index] || !ReferenceEquals(_pickupObjects[index], held);
+        if (!_pickupFailing[index])
+        {
+            _pickupSince[index] = Time.realtimeSinceStartup;
+            _pickupAttempts[index] = 0;
+        }
+
+        _pickupObjects[index] = held;
+        _pickupRetryAt[index] = Time.realtimeSinceStartup + SlotRetrySeconds;
+        _pickupFailing[index] = true;
+        _pickupAttempts[index]++;
         return log;
     }
 

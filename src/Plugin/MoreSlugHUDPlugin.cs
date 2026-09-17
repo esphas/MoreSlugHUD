@@ -8,8 +8,8 @@ using UnityEngine;
 
 [assembly: AssemblyTitle("MoreSlugHUD")]
 [assembly: AssemblyDescription("Configurable HUDs for Rain World")]
-[assembly: AssemblyVersion("0.1.3")]
-[assembly: AssemblyFileVersion("0.1.3")]
+[assembly: AssemblyVersion("0.2.0")]
+[assembly: AssemblyFileVersion("0.2.0")]
 [assembly: ComVisible(false)]
 
 namespace MoreSlugHUD;
@@ -19,7 +19,7 @@ internal static class PluginInfo
     internal const string Guid = "more_slug_hud";
     internal const string ModId = "more_slug_hud";
     internal const string Name = "MoreSlugHUD";
-    internal const string Version = "0.1.3";
+    internal const string Version = "0.2.0";
     internal const string ToggleKeybindId = "more-slug-hud:toggle";
     internal const string ToggleIdKeybindId = "more-slug-hud:toggle-id";
     internal const string ToggleHistoryKeybindId = "more-slug-hud:toggle-history";
@@ -132,9 +132,7 @@ public sealed class MoreSlugHUDPlugin : BaseUnityPlugin
             return;
         }
 
-        HudHooks.Apply();
-        IdHooks.Apply();
-        PlayerInputHooks.Apply();
+        HudFeatures.Apply();
         _hooksApplied = true;
     }
 
@@ -145,9 +143,7 @@ public sealed class MoreSlugHUDPlugin : BaseUnityPlugin
             return;
         }
 
-        HudHooks.Remove();
-        IdHooks.Remove();
-        PlayerInputHooks.Remove();
+        HudFeatures.Remove();
         _hooksApplied = false;
     }
 }

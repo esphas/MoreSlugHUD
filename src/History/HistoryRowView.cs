@@ -19,9 +19,9 @@ internal sealed class HistoryRowView
     internal HistoryRowView(FContainer container)
     {
         _duration = CreateLabel(container, FLabelAlignment.Right);
-        _stateIcons = new FSprite[HudIcons.MaxSimultaneousStates];
-        _stateLetters = new FLabel[HudIcons.MaxSimultaneousStates];
-        for (var i = 0; i < HudIcons.MaxSimultaneousStates; i++)
+        _stateIcons = new FSprite[HistoryLayout.MaxSimultaneousStates];
+        _stateLetters = new FLabel[HistoryLayout.MaxSimultaneousStates];
+        for (var i = 0; i < HistoryLayout.MaxSimultaneousStates; i++)
         {
             _stateIcons[i] = CreateIcon(container);
             _stateLetters[i] = CreateLabel(container, FLabelAlignment.Center);
@@ -30,9 +30,9 @@ internal sealed class HistoryRowView
         _direction = CreateIcon(container);
         _neutral = CreateLabel(container, FLabelAlignment.Center);
 
-        _actionIcons = new FSprite[HudIcons.ActionCount];
-        _actionLetters = new FLabel[HudIcons.ActionCount];
-        for (var i = 0; i < HudIcons.ActionCount; i++)
+        _actionIcons = new FSprite[HistoryActionCatalog.Count];
+        _actionLetters = new FLabel[HistoryActionCatalog.Count];
+        for (var i = 0; i < HistoryActionCatalog.Count; i++)
         {
             _actionIcons[i] = CreateIcon(container);
             _actionLetters[i] = CreateLabel(container, FLabelAlignment.Center);
@@ -51,31 +51,7 @@ internal sealed class HistoryRowView
         var showStates = InputHistoryConfig.ShowStates;
         var showDir = InputHistoryConfig.TrackDirection;
         var state = entry.State;
-        var stateSlot = HudIcons.StateSlot;
-        var actionSlot = HudIcons.ActionSlot;
-        var dirSlot = HudIcons.Slot;
-        var gap = HudIcons.DirectionGap;
-        var stateWidth = showStates ? HudIcons.MaxSimultaneousStates * stateSlot : 0f;
-        var dirBlock = showDir ? gap + dirSlot : InputHistoryConfig.TrackedActionCount > 0 ? gap : 0f;
-        float stateBandLeft;
-        float durationX;
-        float directionX;
-        float actionOrigin;
-        if (alignLeft)
-        {
-            stateBandLeft = left;
-            durationX = left + stateWidth + HudIcons.DurationColumn;
-            directionX = durationX + gap + dirSlot * 0.5f;
-            actionOrigin = durationX + dirBlock;
-        }
-        else
-        {
-            var right = left + HudIcons.RowWidth;
-            stateBandLeft = right - stateWidth;
-            durationX = stateBandLeft - HudIcons.DurationColumn;
-            directionX = durationX - gap - dirSlot * 0.5f;
-            actionOrigin = durationX - dirBlock;
-        }
+        var placement = HistoryLayout.Arrange(left, alignLeft);
 
         _duration.isVisible = true;
         if (_lastDuration != entry.Duration)
@@ -84,44 +60,45 @@ internal sealed class HistoryRowView
             _duration.text = DurationText[entry.Duration];
         }
         _duration.alignment = alignLeft ? FLabelAlignment.Right : FLabelAlignment.Left;
-        _duration.x = durationX;
+        _duration.x = placement.DurationX;
         _duration.y = y;
-        _duration.scale = HudIcons.DurationScale;
+        _duration.scale = HistoryLayout.DurationScale;
         _duration.alpha = alpha;
 
         var packed = 0;
         if (showStates)
         {
-            for (var i = 0; i < HudIcons.StateOrder.Length; i++)
+            var tags = MovementTagCatalog.DisplayOrder;
+            for (var i = 0; i < tags.Length; i++)
             {
-                if ((state.Movement & HudIcons.StateOrder[i]) == 0)
+                if ((state.Movement & tags[i].Tag) == 0)
                 {
                     continue;
                 }
 
-                if (packed >= HudIcons.MaxSimultaneousStates)
+                if (packed >= HistoryLayout.MaxSimultaneousStates)
                 {
                     break;
                 }
 
                 var slotIndex = alignLeft
-                    ? HudIcons.MaxSimultaneousStates - 1 - packed
+                    ? HistoryLayout.MaxSimultaneousStates - 1 - packed
                     : packed;
-                var x = stateBandLeft + (slotIndex + 0.5f) * stateSlot;
+                var x = placement.StateBandLeft + (slotIndex + 0.5f) * placement.StateSlot;
                 if (letters)
                 {
-                    PlaceLetter(_stateLetters[packed], HudIcons.StateLetters[i], x, y, alpha);
+                    PlaceLetter(_stateLetters[packed], tags[i].Letter, x, y, alpha);
                 }
                 else
                 {
-                    PlaceIcon(_stateIcons[packed], HudIcons.StateElements[i], on: true, x, y, alpha);
+                    PlaceIcon(_stateIcons[packed], tags[i].Element, on: true, x, y, alpha);
                 }
 
                 packed++;
             }
         }
 
-        for (var i = packed; i < HudIcons.MaxSimultaneousStates; i++)
+        for (var i = packed; i < HistoryLayout.MaxSimultaneousStates; i++)
         {
             _stateIcons[i].isVisible = false;
             _stateLetters[i].isVisible = false;
@@ -148,7 +125,7 @@ internal sealed class HistoryRowView
             if (letters && neutral)
             {
                 _direction.isVisible = false;
-                PlaceLetter(_neutral, HudIcons.NeutralLetter, directionX, y, alpha);
+                PlaceLetter(_neutral, HudIcons.NeutralLetter, placement.DirectionX, y, alpha);
             }
             else
             {
@@ -157,7 +134,7 @@ internal sealed class HistoryRowView
                     _direction,
                     HudIcons.DirectionElement(state.X, state.Y),
                     on: true,
-                    directionX,
+                    placement.DirectionX,
                     y,
                     alpha);
             }
@@ -172,31 +149,25 @@ internal sealed class HistoryRowView
         var actionPacked = 0;
         if (showActions)
         {
-            for (var i = 0; i < HudIcons.ActionCount; i++)
+            var actions = HistoryActionCatalog.DisplayOrder;
+            for (var i = 0; i < actions.Length; i++)
             {
-                var pressed = i switch
-                {
-                    0 => state.Jump,
-                    1 => state.Throw,
-                    2 => state.Pickup,
-                    _ => state.Special,
-                };
-                if (!pressed)
+                if (!HistoryActionCatalog.IsPressed(state, i))
                 {
                     continue;
                 }
 
                 var actionX = alignLeft
-                    ? actionOrigin + (actionPacked + 0.5f) * actionSlot
-                    : actionOrigin - (actionPacked + 0.5f) * actionSlot;
+                    ? placement.ActionOrigin + (actionPacked + 0.5f) * placement.ActionSlot
+                    : placement.ActionOrigin - (actionPacked + 0.5f) * placement.ActionSlot;
                 if (letters)
                 {
-                    PlaceLetter(_actionLetters[actionPacked], HudIcons.ActionLetters[i], actionX, y, alpha);
+                    PlaceLetter(_actionLetters[actionPacked], actions[i].Letter, actionX, y, alpha);
                     _actionIcons[actionPacked].isVisible = false;
                 }
                 else
                 {
-                    PlaceIcon(_actionIcons[actionPacked], HudIcons.ActionElements[i], on: true, actionX, y, alpha);
+                    PlaceIcon(_actionIcons[actionPacked], actions[i].Element, on: true, actionX, y, alpha);
                     _actionLetters[actionPacked].isVisible = false;
                 }
 
@@ -204,7 +175,7 @@ internal sealed class HistoryRowView
             }
         }
 
-        for (var i = actionPacked; i < HudIcons.ActionCount; i++)
+        for (var i = actionPacked; i < HistoryActionCatalog.Count; i++)
         {
             _actionIcons[i].isVisible = false;
             _actionLetters[i].isVisible = false;
@@ -217,13 +188,13 @@ internal sealed class HistoryRowView
         _lastDuration = 255;
         _direction.isVisible = false;
         _neutral.isVisible = false;
-        for (var i = 0; i < HudIcons.MaxSimultaneousStates; i++)
+        for (var i = 0; i < HistoryLayout.MaxSimultaneousStates; i++)
         {
             _stateIcons[i].isVisible = false;
             _stateLetters[i].isVisible = false;
         }
 
-        for (var i = 0; i < HudIcons.ActionCount; i++)
+        for (var i = 0; i < HistoryActionCatalog.Count; i++)
         {
             _actionIcons[i].isVisible = false;
             _actionLetters[i].isVisible = false;
@@ -235,13 +206,13 @@ internal sealed class HistoryRowView
         _duration.RemoveFromContainer();
         _direction.RemoveFromContainer();
         _neutral.RemoveFromContainer();
-        for (var i = 0; i < HudIcons.MaxSimultaneousStates; i++)
+        for (var i = 0; i < HistoryLayout.MaxSimultaneousStates; i++)
         {
             _stateIcons[i].RemoveFromContainer();
             _stateLetters[i].RemoveFromContainer();
         }
 
-        for (var i = 0; i < HudIcons.ActionCount; i++)
+        for (var i = 0; i < HistoryActionCatalog.Count; i++)
         {
             _actionIcons[i].RemoveFromContainer();
             _actionLetters[i].RemoveFromContainer();
@@ -300,7 +271,7 @@ internal sealed class HistoryRowView
         label.text = text;
         label.x = x;
         label.y = y;
-        label.scale = HudIcons.DurationScale;
+        label.scale = HistoryLayout.DurationScale;
         label.alpha = alpha;
         label.color = Color.white;
     }

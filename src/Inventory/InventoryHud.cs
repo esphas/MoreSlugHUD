@@ -17,12 +17,14 @@ internal sealed class InventoryHud : HudPart
         SlotId.Right,
         SlotId.Stomach,
         SlotId.Back,
+        SlotId.Pyro,
     };
 
     private readonly SlotView[] _views;
     private readonly InventorySnapshot _snapshot = new();
-    private readonly SlotId[] _occupying = new SlotId[5];
     private readonly InventoryFailState _slotFails = new();
+    private readonly PyroRecovery _pyro = new();
+    private Player? _pyroPlayer;
     private bool _hasSnapshot;
     private bool _updateBroken;
     private InputScope _broken;
@@ -60,6 +62,8 @@ internal sealed class InventoryHud : HudPart
             _broken = default;
             _scope = default;
             _slotFails.Reset();
+            _pyro.Reset();
+            _pyroPlayer = null;
             return;
         }
 
@@ -73,10 +77,13 @@ internal sealed class InventoryHud : HudPart
         try
         {
             player = LocalPlayerBinder.Bind(hud);
-            Visibility.PollToggle(player, MoreSlugHUDPlugin.ToggleKeybind, HudLayer.Inventory, MoreSlugHUDConfig.Enabled, "inventory-toggle");
-            Visibility.PollToggle(player, MoreSlugHUDPlugin.ToggleIdKeybind, HudLayer.Id, MoreSlugHUDConfig.IdEnabled, "id-toggle");
+            if (player != null)
+            {
+                ObservePyro(player);
+            }
+
             var game = GameContext.FromHud(hud);
-            if (Visibility.HideHud(hud, player, game, HudLayer.Inventory) != null || player == null)
+            if (Visibility.HideHud(hud, player, game, HudFeatureId.Inventory) != null || player == null)
             {
                 _hasSnapshot = false;
                 return;
@@ -133,8 +140,7 @@ internal sealed class InventoryHud : HudPart
                 _drawBroken = false;
             }
 
-            var count = _snapshot.CopyOccupying(_occupying);
-            var layout = LayoutEngine.Place(hud, _occupying, count);
+            var origin = InventoryLayout.OriginOf(hud);
             for (var i = 0; i < SlotOrder.Length; i++)
             {
                 var id = SlotOrder[i];
@@ -145,17 +151,12 @@ internal sealed class InventoryHud : HudPart
                     continue;
                 }
 
-                var local = Vector2.zero;
-                for (var p = 0; p < layout.Count; p++)
+                if (id == SlotId.Pyro)
                 {
-                    if (layout.Slots[p].Id == id)
-                    {
-                        local = layout.Slots[p].Local;
-                        break;
-                    }
+                    content.PyroFill = _pyro.Fill;
                 }
 
-                _views[i].Draw(content, layout.Origin + local, timeStacker);
+                _views[i].Draw(content, origin + MoreSlugHUDConfig.SlotLocal(id), timeStacker);
             }
         }
         catch (Exception exception)
@@ -175,6 +176,23 @@ internal sealed class InventoryHud : HudPart
         {
             _views[i].Remove();
         }
+    }
+
+    private void ObservePyro(Player player)
+    {
+        if (!ReferenceEquals(_pyroPlayer, player))
+        {
+            _pyro.Reset();
+            _pyroPlayer = player;
+        }
+
+        if (!DownpourCompat.HasPyroMechanics(player))
+        {
+            _pyro.Observe(0, 0f);
+            return;
+        }
+
+        _pyro.Observe(player.pyroJumpCounter, player.pyroJumpCooldown);
     }
 
     private void RefreshFailScope(Player player)

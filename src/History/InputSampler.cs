@@ -31,13 +31,13 @@ internal static class InputSampler
 
         var timeline = PlayerTimelines.Get(player);
         var tags = MovementStateClassifier.Classify(player);
-        var state = new InputState(player.input[0], tags);
+        var state = new InputState(player.input[0], tags, InputFilter.FromConfig());
         var created = timeline.Observe(state, InputHistoryConfig.EffectiveMaxRows);
         var stateCount = CountTags(state.Movement);
-        if (created && stateCount > HudIcons.MaxSimultaneousStates)
+        if (created && stateCount > HistoryLayout.MaxSimultaneousStates)
         {
             MoreSlugHUDLog.Warning(
-                $"state count {stateCount} exceeds reserved {HudIcons.MaxSimultaneousStates}: {InputHistoryFormatter.FormatTags(tags)}");
+                $"state count {stateCount} exceeds reserved {HistoryLayout.MaxSimultaneousStates}: {InputHistoryFormatter.FormatTags(tags)}");
         }
     }
 

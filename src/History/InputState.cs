@@ -2,6 +2,25 @@ using System;
 
 namespace MoreSlugHUD;
 
+internal readonly struct InputFilter
+{
+    internal InputFilter(bool trackDirection, bool trackActions, MovementTags trackedStateMask)
+    {
+        TrackDirection = trackDirection;
+        TrackActions = trackActions;
+        TrackedStateMask = trackedStateMask;
+    }
+
+    internal bool TrackDirection { get; }
+    internal bool TrackActions { get; }
+    internal MovementTags TrackedStateMask { get; }
+
+    internal static InputFilter FromConfig() => new(
+        InputHistoryConfig.TrackDirection,
+        InputHistoryConfig.TrackActions,
+        InputHistoryConfig.TrackedStateMask);
+}
+
 internal readonly struct InputState : IEquatable<InputState>
 {
     internal readonly sbyte X;
@@ -12,9 +31,9 @@ internal readonly struct InputState : IEquatable<InputState>
     internal readonly bool Special;
     internal readonly MovementTags Movement;
 
-    internal InputState(Player.InputPackage input, MovementTags movement)
+    internal InputState(Player.InputPackage input, MovementTags movement, InputFilter filter)
     {
-        if (InputHistoryConfig.TrackDirection)
+        if (filter.TrackDirection)
         {
             X = (sbyte)ClampDirection(input.x);
             Y = (sbyte)ClampDirection(input.y);
@@ -25,12 +44,11 @@ internal readonly struct InputState : IEquatable<InputState>
             Y = 0;
         }
 
-        var actions = InputHistoryConfig.TrackActions;
-        Jump = actions && input.jmp;
-        Throw = actions && input.thrw;
-        Pickup = actions && input.pckp;
-        Special = actions && input.spec;
-        Movement = movement & InputHistoryConfig.TrackedStateMask;
+        Jump = filter.TrackActions && input.jmp;
+        Throw = filter.TrackActions && input.thrw;
+        Pickup = filter.TrackActions && input.pckp;
+        Special = filter.TrackActions && input.spec;
+        Movement = movement & filter.TrackedStateMask;
     }
 
     public bool Equals(InputState other) =>

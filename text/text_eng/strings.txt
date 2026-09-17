@@ -8,16 +8,27 @@ more_slug_hud.options.tab.id|Labels
 more_slug_hud.options.tab.history|Input history
 more_slug_hud.options.section.slots|Slots
 more_slug_hud.options.section.layout|Layout
+more_slug_hud.options.section.misc|Misc
 more_slug_hud.options.enabled|Enable inventory HUD
-more_slug_hud.options.toggle_hint|The key configured in IIC toggles the inventory bar in-game.
-more_slug_hud.options.slot.left|Left hand
-more_slug_hud.options.slot.right|Right hand
+more_slug_hud.options.toggle_hint|The key configured in IIC toggles this panel in-game.
+more_slug_hud.options.toggle_hint.bound| (Current: {0})
+more_slug_hud.options.toggle_hint.unbound| (Not bound)
+more_slug_hud.options.slot.left|Main hand
+more_slug_hud.options.slot.right|Off-hand
 more_slug_hud.options.slot.stomach|Stomach
 more_slug_hud.options.slot.back|Back
 more_slug_hud.options.slot.craft|Craft preview
+more_slug_hud.options.slot.pyro|Bomb-jump heat
+more_slug_hud.options.slot.pyro.hint|Remaining usable heat.
+more_slug_hud.options.slot.pickup|Show pick-up candidate
+more_slug_hud.options.slot.pickup.hint|Show a hologram preview of the pick-up target.
+more_slug_hud.options.slot.show|Show
+more_slug_hud.options.slot.show.hint|Show this slot on the inventory HUD.
 more_slug_hud.options.style|Style
+more_slug_hud.options.style.hint|How slots sit relative to the origin.
 more_slug_hud.options.style.row|Row
 more_slug_hud.options.style.cross|Cross
+more_slug_hud.options.style.custom|Custom
 more_slug_hud.options.position|Position
 more_slug_hud.options.position.bottom_center|Bottom center
 more_slug_hud.options.position.top_center|Top center
@@ -25,14 +36,14 @@ more_slug_hud.options.position.top_left|Top left
 more_slug_hud.options.position.top_right|Top right
 more_slug_hud.options.position.bottom_right|Bottom right
 more_slug_hud.options.position.custom|Custom
-more_slug_hud.options.custom_x|Custom X
-more_slug_hud.options.custom_y|Custom Y
 more_slug_hud.options.enabled.hint|Turns the inventory bar on.
-more_slug_hud.options.style.row.hint|Left to right: craft, left, right, stomach, back.
-more_slug_hud.options.style.cross.hint|Back up, stomach down, both hands, craft preview shown left of the left hand.
 more_slug_hud.options.position.hint|Place on screen.
-more_slug_hud.options.custom_x.hint|0 is left, 100 is right.
-more_slug_hud.options.custom_y.hint|0 is bottom, 100 is top.
+more_slug_hud.options.custom_x.hint|0 is the left of the safe area, 100 is the right.
+more_slug_hud.options.custom_y.hint|0 is the bottom of the safe area, 100 is the top.
+more_slug_hud.options.layout.canvas_hint|Drag a slot to set its offset from the origin.
+more_slug_hud.options.position.canvas_hint|Drag the HUD to set the origin on screen.
+more_slug_hud.options.layout.off_screen|Current layout may extend outside the screen or safe area.
+more_slug_hud.options.layout.overlap_hud|Current layout may cover vanilla HUD.
 more_slug_hud.options.id.enabled|Enable creature labels
 more_slug_hud.options.id.enabled.hint|Turns overhead labels on.
 more_slug_hud.options.id.show_number|Number
@@ -50,7 +61,6 @@ more_slug_hud.options.id.arrange.stack|Column
 more_slug_hud.options.id.arrange.stack.hint|Each on its own line, intent beside the first item.
 more_slug_hud.options.id.arrange.cycle|Cycle
 more_slug_hud.options.id.arrange.cycle.hint|Number and name take turns. Intent stays on the right.
-more_slug_hud.options.id.toggle_hint|The key configured in IIC toggles labels in-game.
 more_slug_hud.options.id.familiarity|Familiarity threshold (%)
 more_slug_hud.options.id.familiarity.hint|Familiarity needed for a label. 0 shows all.
 more_slug_hud.options.id.strict_watch|Strict line of sight
@@ -60,7 +70,6 @@ more_slug_hud.options.id.watch_seconds.hint|How long a target must be watched be
 more_slug_hud.options.id.show_dead|Show the dead
 more_slug_hud.options.history.enabled|Enable input history
 more_slug_hud.options.history.enabled.hint|Turns the input history HUD on.
-more_slug_hud.options.history.toggle_hint|The key configured in IIC toggles input history in-game. Default H.
 more_slug_hud.options.history.side|Position
 more_slug_hud.options.history.side.hint|Top-left or top-right, leaving the top edge for the inventory HUD.
 more_slug_hud.options.history.side.left|Left

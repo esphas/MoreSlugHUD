@@ -2,11 +2,11 @@ namespace MoreSlugHUD;
 
 internal static class CraftPredictor
 {
-    internal static IconDraw? Predict(Player player, bool? expeditionCrafting = null)
+    internal static CraftPrediction Predict(Player player, bool? expeditionCrafting = null)
     {
         if (player.grasps == null)
         {
-            return null;
+            return CraftPrediction.Hidden(CraftUnavailableReason.NotApplicable);
         }
 
         if (DownpourCompat.IsArtificer(player))
@@ -20,21 +20,21 @@ internal static class CraftPredictor
             return PredictCombo(player, expedition);
         }
 
-        return null;
+        return CraftPrediction.Hidden(CraftUnavailableReason.NotApplicable);
     }
 
-    private static IconDraw? PredictArtificer(Player player)
+    private static CraftPrediction PredictArtificer(Player player)
     {
         if (player.FoodInStomach <= 0)
         {
-            return null;
+            return CraftPrediction.Hidden(CraftUnavailableReason.NoFood);
         }
 
         foreach (var grasp in player.grasps)
         {
             if (grasp?.grabbed is IPlayerEdible edible && edible.Edible)
             {
-                return null;
+                return CraftPrediction.Hidden(CraftUnavailableReason.HoldingEdible);
             }
         }
 
@@ -43,37 +43,39 @@ internal static class CraftPredictor
                 && CanCraftExplosiveSpear(player.grasps[1])
                 && player.objectInStomach == null))
         {
-            return IconLookup.FromItemType(AbstractPhysicalObject.AbstractObjectType.Spear, 1);
+            return CraftPrediction.Item(AbstractPhysicalObject.AbstractObjectType.Spear, 1);
         }
 
-        return null;
+        return CraftPrediction.Hidden(CraftUnavailableReason.NoCraftableSpear);
     }
 
-    private static IconDraw? PredictCombo(Player player, bool expeditionCrafting)
+    private static CraftPrediction PredictCombo(Player player, bool expeditionCrafting)
     {
         var type = player.CraftingResults();
         if (type == null)
         {
-            return null;
+            return CraftPrediction.Hidden(CraftUnavailableReason.NoRecipe);
         }
 
         if (type == AbstractPhysicalObject.AbstractObjectType.DangleFruit)
         {
             if (DownpourCompat.IsSpearmaster(player) && expeditionCrafting)
             {
-                return null;
+                return CraftPrediction.Hidden(CraftUnavailableReason.SpearmasterFoodBlocked);
             }
 
-            return IconLookup.FoodResult();
+            return CraftPrediction.Food();
         }
 
         if (type == AbstractPhysicalObject.AbstractObjectType.Creature)
         {
             var crit = DownpourCompat.ComboCreature(player.grasps[0], player.grasps[1]);
-            return crit == null ? null : IconLookup.FromCreatureType(crit);
+            return crit == null
+                ? CraftPrediction.Hidden(CraftUnavailableReason.UnknownCreature)
+                : CraftPrediction.Creature(crit);
         }
 
-        return IconLookup.FromItemType(type, 0);
+        return CraftPrediction.Item(type, 0);
     }
 
     private static bool CanCraftExplosiveSpear(Creature.Grasp? grasp) =>

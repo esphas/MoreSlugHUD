@@ -51,7 +51,7 @@ internal static class InputHistoryConfig
 
     internal static bool ShowStates => TrackedStateMask != MovementTags.None;
 
-    internal static int TrackedActionCount => TrackActions ? HudIcons.ActionCount : 0;
+    internal static int TrackedActionCount => TrackActions ? HistoryActionCatalog.Count : 0;
 
     internal static float SideInset => Density == HistoryDensity.Compact ? 18f : 32f;
 
