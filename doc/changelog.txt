@@ -1,7 +1,7 @@
 ---
 v0.2.0
-库存布局支持可视化编辑；新增拾取候选与炸弹跳热量。
-Inventory layout can be edited visually. Added pick-up candidate preview and bomb-jump heat.
+库存布局支持可视化编辑；新增拾取候选与炸弹跳热量
+Inventory layout can be edited visually. Added pick-up candidate preview and bomb-jump heat
 v0.1.3
 调整了部分意图检测，以使其在拾荒者和蜥蜴上表现得更准确
 Adjusted some intent checks so they read more accurately on scavengers and lizards
