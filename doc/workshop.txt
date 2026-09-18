@@ -16,6 +16,8 @@
   [*] [工匠] 支持显示炸弹跳剩余可用热度
 [/list]
 
+[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-inventory.gif[/img]
+
 在拓展菜单中可以自定义屏幕坐标及栏位布局。
 
 
@@ -79,6 +81,8 @@ Shows what you are holding in both hands, stomach, and back, plus:
   [*] [Gourmand, Artificer] Craft-result prediction
   [*] [Artificer] Remaining usable bomb-jump heat
 [/list]
+
+[img]https://cdn.jsdelivr.net/gh/esphas/MoreSlugHUD/static/preview-inventory.gif[/img]
 
 Screen position and slot layout can be customized in Remix.
 
