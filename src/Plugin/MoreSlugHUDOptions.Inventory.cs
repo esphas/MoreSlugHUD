@@ -46,7 +46,6 @@ public sealed partial class MoreSlugHUDOptions
     private readonly OpUpdown[] _slotYs = new OpUpdown[InventorySlots.Count];
     private readonly OpCheckBox?[] _slotChecks = new OpCheckBox?[InventorySlots.Count];
     private SlotId _selectedSlot = SlotId.Left;
-    private bool _syncingPreset;
     private bool _syncingSlotUi;
 
     private void BindInventory()
@@ -349,25 +348,9 @@ public sealed partial class MoreSlugHUDOptions
         page.Advance(pad);
     }
 
-    private void OnOriginEdited()
-    {
-        if (!_syncingPreset)
-        {
-            BeginCustomPosition(seedFromPreset: false);
-        }
+    private void OnOriginEdited() => RefreshInventoryLocks();
 
-        RefreshInventoryLocks();
-    }
-
-    private void OnSlotEdited()
-    {
-        if (!_syncingPreset)
-        {
-            BeginCustomLayout(seedFromPreset: false);
-        }
-
-        RefreshInventoryLocks();
-    }
+    private void OnSlotEdited() => RefreshInventoryLocks();
 
     private void RefreshInventoryLocks()
     {
@@ -472,7 +455,6 @@ public sealed partial class MoreSlugHUDOptions
             return;
         }
 
-        _syncingPreset = true;
         if (seedFromPreset)
         {
             SetOriginFields(
@@ -481,7 +463,6 @@ public sealed partial class MoreSlugHUDOptions
         }
 
         SelectCombo(_positionBox, Position, "custom");
-        _syncingPreset = false;
     }
 
     private void BeginCustomLayout(bool seedFromPreset)
@@ -491,7 +472,6 @@ public sealed partial class MoreSlugHUDOptions
             return;
         }
 
-        _syncingPreset = true;
         if (seedFromPreset)
         {
             var layout = PendingLayout();
@@ -502,7 +482,6 @@ public sealed partial class MoreSlugHUDOptions
         }
 
         SelectCombo(_layoutBox, Layout, "custom");
-        _syncingPreset = false;
     }
 
     private void SetOriginFields(Vector2 origin, bool pending)

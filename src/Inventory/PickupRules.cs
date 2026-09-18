@@ -10,76 +10,160 @@ internal enum PickupDestination
 
 internal static class PickupRules
 {
-    internal static PickupDestination Resolve(Player player, PhysicalObject candidate)
+    internal static bool TryResolve(Player player, PhysicalObject candidate, out PickupDestination destination)
     {
-        if (GoesToBack(player, candidate))
+        destination = PickupDestination.None;
+        if (!TryGoesToBack(player, candidate, out var back))
         {
-            return PickupDestination.Back;
+            return false;
         }
 
-        if (GraspEmpty(player, 0))
+        if (back)
         {
-            return PickupDestination.Left;
+            destination = PickupDestination.Back;
+            return true;
         }
 
-        if (GraspEmpty(player, 1))
+        var left = Grasp(player, 0);
+        var right = Grasp(player, 1);
+        var empty = (left == null ? 1 : 0) + (right == null ? 1 : 0);
+        if (!PlayerGrabability.TryGet(player, candidate, out var candidateGrab))
         {
-            return PickupDestination.Right;
+            return false;
         }
 
-        return PickupDestination.None;
+        var dropLeft = false;
+        var dropRight = false;
+        if (candidateGrab == Player.ObjectGrabability.TwoHands && empty < 4)
+        {
+            dropLeft = left != null;
+            dropRight = right != null;
+        }
+        else if (empty == 0)
+        {
+            if (left is Fly)
+            {
+                dropLeft = true;
+            }
+            else if (right is Fly)
+            {
+                dropRight = true;
+            }
+        }
+
+        if (left == null || dropLeft)
+        {
+            destination = PickupDestination.Left;
+            return true;
+        }
+
+        if (right == null || dropRight)
+        {
+            destination = PickupDestination.Right;
+            return true;
+        }
+
+        return true;
     }
 
-    private static bool GoesToBack(Player player, PhysicalObject candidate)
+    private static bool TryGoesToBack(Player player, PhysicalObject candidate, out bool goes)
     {
+        goes = false;
         if (candidate is Spear && player.CanPutSpearToBack)
         {
-            return HasGrabAtLeast(player, Player.ObjectGrabability.BigOneHand) || BothHandsOccupied(player);
+            if (!TryHasGrabAtLeast(player, Player.ObjectGrabability.BigOneHand, out var has))
+            {
+                return false;
+            }
+
+            goes = has || BothHandsOccupied(player);
+            return true;
         }
 
         if (candidate is not Player slug || !player.CanPutSlugToBack)
         {
-            return false;
+            return true;
         }
 
         if (slug.dead && !player.CanIPutDeadSlugOnBack(slug))
         {
-            return false;
+            return true;
         }
 
-        return HasSlugBackHand(player)
-            || BothHandsOccupied(player)
-            || player.bodyMode == Player.BodyModeIndex.Crawl;
-    }
-
-    private static bool HasGrabAtLeast(Player player, Player.ObjectGrabability minimum)
-    {
-        var left = Grasp(player, 0);
-        var right = Grasp(player, 1);
-        return (left != null && player.Grabability(left) >= minimum)
-            || (right != null && player.Grabability(right) >= minimum);
-    }
-
-    private static bool HasSlugBackHand(Player player)
-    {
-        return SlugBackHand(player, 0) || SlugBackHand(player, 1);
-    }
-
-    private static bool SlugBackHand(Player player, int index)
-    {
-        var grabbed = Grasp(player, index);
-        if (grabbed == null)
+        if (!TrySlugBackHand(player, 0, out var left) || !TrySlugBackHand(player, 1, out var right))
         {
             return false;
         }
 
-        return player.Grabability(grabbed) > Player.ObjectGrabability.BigOneHand || grabbed is Player;
+        goes = left
+            || right
+            || BothHandsOccupied(player)
+            || player.bodyMode == Player.BodyModeIndex.Crawl;
+        return true;
+    }
+
+    private static bool TryHasGrabAtLeast(Player player, Player.ObjectGrabability minimum, out bool has)
+    {
+        has = false;
+        var left = Grasp(player, 0);
+        var right = Grasp(player, 1);
+        if (left != null)
+        {
+            if (!PlayerGrabability.TryGet(player, left, out var leftGrab))
+            {
+                return false;
+            }
+
+            if (leftGrab >= minimum)
+            {
+                has = true;
+                return true;
+            }
+        }
+
+        if (right != null)
+        {
+            if (!PlayerGrabability.TryGet(player, right, out var rightGrab))
+            {
+                return false;
+            }
+
+            if (rightGrab >= minimum)
+            {
+                has = true;
+                return true;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool TrySlugBackHand(Player player, int index, out bool match)
+    {
+        match = false;
+        var grabbed = Grasp(player, index);
+        if (grabbed == null)
+        {
+            return true;
+        }
+
+        if (grabbed is Player)
+        {
+            match = true;
+            return true;
+        }
+
+        if (!PlayerGrabability.TryGet(player, grabbed, out var grab))
+        {
+            return false;
+        }
+
+        match = grab > Player.ObjectGrabability.BigOneHand;
+        return true;
     }
 
     private static bool BothHandsOccupied(Player player) =>
         Grasp(player, 0) != null && Grasp(player, 1) != null;
-
-    internal static bool GraspEmpty(Player player, int index) => Grasp(player, index) == null;
 
     private static PhysicalObject? Grasp(Player player, int index)
     {

@@ -5,93 +5,124 @@
 
 [url=https://github.com/esphas/MoreSlugHUD]Github[/url]
 
+[h1]功能[/h1]
 
-[b]库存[/b]
+[h2]库存[/h2]
 
-显示当前库存（双手、腹部、背部）的物品；并显示合成结果预测。
+显示当前双手、腹部、背部的物品，此外：
+[list]
+  [*] 支持显示待拾取的候选物品
+  [*] [饕餮,工匠] 支持显示合成结果预测
+  [*] [工匠] 支持显示炸弹跳剩余可用热度
+[/list]
 
-该功能受到 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2957745837]What's in My Pocket?[/url] 启发。
-（事实上这个 mod 的起点就是“我想把它待办里说的合成预测做出来”，只不过后续加入了其他新的想法，才导致最终单独写了一个 mod，而不是一个 fork。衷心致谢。）
-
-支持十字和横排两种展示方式，可自定义屏幕坐标。
-
-
-[b]生物标签[/b]
-
-给特定生物（蜥蜴、拾荒者、猫崽）头顶展示编号、辨识名与意图（中立、友善与攻击）。
-
-该功能受到 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2934997065]Visible ID[/url] 启发。
-
-辨识名：使用古代符文为生物取一个名字；我自己也不知道怎么读但我感觉很酷。
-（我本计划允许玩家自定义名称，但在着手开发此功能之前，我注意到 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3775963449]Name Your Friends[/url] 出现了，并且基本能满足我设想的需求；因此最终仅保留了这个用于提供气氛的选项。）
-
-各项目可独立切换是否展示。
+在拓展菜单中可以自定义屏幕坐标及栏位布局。
 
 
-[b]输入历史[/b]
+[h2]生物标签[/h2]
 
-实时展示一个带帧数的玩家输入和运动状态的历史日志。（玩过格斗游戏的话，应该会很熟悉。）
+在特定生物（蜥蜴、拾荒者、猫崽）头顶展示标签信息，包括：
+[list]
+  [*] 数字编号
+  [*] 辨识名：使用古代符文取的名字
+  [*] 意图（默认关闭）：用图标表示中立、友善与敌对关系
+[/list]
 
-支持在 remix 中详细配置需要展示的内容。
+在拓展菜单中可以自定义各项目是否展示。
+
+
+[h2]输入历史[/h2]
+
+实时展示一个（类似格斗游戏的）带帧数的玩家输入和运动状态的历史日志，记录项目有：
+[list]
+  [*] 运动方向：八方向+中立
+  [*] 动作：抓取、跳跃、投掷、特殊
+  [*] 状态：站立、爬行、空中、爬杆……
+[/list]
+
+在拓展菜单中可以配置各项目是否需要统计。
 
 默认使用字母来表示各运动状态和动作，也可切换为图标。
-（remix 配置面板中有图例，目前的这套图标是我手绘的，我对其并不满意，欢迎提交改进。）
-
-我在该功能开发完成之后，才注意到类似功能已有 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3157558337]Debug - Input Log[/url] 提供。经过考察之后，我认为我实现的效果和它提供的仍然存在差异，因此保留了该功能。
+（配置面板中有图例，目前的这套图标是我手绘的，我对其并不满意，欢迎提交改进。）
 
 
-[b]杂项[/b]
+[h2]杂项[/h2]
 
-可在键位设置（Improved Input Config）中配置按键，以在游戏中切换面板的显示状态。
+可在[url=https://steamcommunity.com/workshop/filedetails/?id=3458119961]键位设置[/url]中配置按键，以在游戏中切换面板的显示状态。
 库存、生物标签无默认绑定按键；输入历史默认绑定键盘 [b]H[/b]、手柄 [b]L3[/b]。
 
 联机兼容性：本地模组，不影响联机。
 
+
+[h1]致谢[/h1]
+
+本模组受到以下模组的启发：
+[list]
+  [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2957745837]What's in My Pocket?[/url]：事实上本模组的起点就是“我想把它待办里说的合成预测做出来”
+  [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2934997065]Visible ID[/url]：这个模组解决了我“认不出这个蜥蜴是不是我驯化的那只”的问题，但由于它比较倾向于调试用途，对我而言暴露了太多信息（启用它之后我再也没被落网虫和拟态草偷袭成功过）
+[/list]
+
 --- en
 
-Several extra HUDs.
+Adds several practical HUDs.
 
 [url=https://github.com/esphas/MoreSlugHUD]GitHub[/url]
 
 
-[b]Inventory[/b]
+[h1]Features[/h1]
 
-Shows what you are holding (hands, stomach, back), plus a craft-result preview.
+[h2]Inventory[/h2]
 
-Inspired by [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2957745837]What's in My Pocket?[/url].
-(This mod started as "I want to build the craft prediction on their to-do list." Other ideas piled on, so it became its own mod instead of a fork. Many thanks.)
+Shows what you are holding in both hands, stomach, and back, plus:
+[list]
+  [*] Pickup candidates
+  [*] [Gourmand, Artificer] Craft-result prediction
+  [*] [Artificer] Remaining usable bomb-jump heat
+[/list]
 
-Cross or row layout. You can pick where it sits on screen.
-
-
-[b]Creature labels[/b]
-
-Puts an ID number, a recognition name, and intent (neutral, friendly, hostile) above lizards, scavengers, and slugpups.
-
-Inspired by [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2934997065]Visible ID[/url].
-
-Recognition names use ancient runes. I cannot read them either, but they look cool.
-(I meant to let you rename creatures. Before I started, [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3775963449]Name Your Friends[/url] showed up and already does that job, so this option stayed as flavor only.)
-
-Each piece can be toggled on its own.
+Screen position and slot layout can be customized in Remix.
 
 
-[b]Input history[/b]
+[h2]Creature labels[/h2]
 
-A live log of your inputs and movement states, with frame counts. Fighting-game players will know the look.
+Puts labels above certain creatures (lizards, scavengers, slugpups), including:
+[list]
+  [*] Numeric ID
+  [*] Recognition name: a name taken from ancient runes
+  [*] Intent (off by default): icons for neutral, friendly, and hostile relations
+[/list]
 
-Remix lets you pick what to show.
+Each item can be toggled in Remix.
+
+
+[h2]Input history[/h2]
+
+A live fighting-game-style log of player inputs and movement states, with frame counts. It records:
+[list]
+  [*] Movement direction: eight directions + neutral
+  [*] Actions: grab, jump, throw, special
+  [*] States: standing, crawling, airborne, climbing poles...
+[/list]
+
+Remix can configure which items to track.
 
 Movement states and actions use letters by default. You can switch to icons.
-(Remix has a legend. I drew the icons myself and I am not happy with them; better art is welcome.)
-
-I only noticed [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3157558337]Debug - Input Log[/url] after I finished this. I still think the two look different enough, so I kept it.
+(The config panel has a legend. I drew the current icons myself and I am not happy with them; improvements are welcome.)
 
 
-[b]Misc[/b]
+[h2]Misc[/h2]
 
-Bind keys in Improved Input Config to toggle each panel in-game.
+Bind keys in [url=https://steamcommunity.com/workshop/filedetails/?id=3458119961]Improved Input Config[/url] to toggle each panel in-game.
 Inventory and creature labels have no default binds. Input history defaults to keyboard [b]H[/b] and gamepad [b]L3[/b].
 
 Multiplayer: local-only. It does not affect online play.
+
+
+[h1]Credits[/h1]
+
+This mod was inspired by:
+[list]
+  [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2957745837]What's in My Pocket?[/url]: this mod started as "I want to build the craft prediction on their to-do list."
+  [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2934997065]Visible ID[/url]: it solved "I can't tell if this is the lizard I tamed," but it leans toward debug use and showed me too much (after turning it on, I never got ambushed by a dropwig or pole plant again)
+[/list]
 

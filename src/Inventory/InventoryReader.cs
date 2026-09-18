@@ -341,7 +341,12 @@ internal static class InventoryReader
             return;
         }
 
-        switch (PickupRules.Resolve(player, candidate))
+        if (!PickupRules.TryResolve(player, candidate, out var destination))
+        {
+            return;
+        }
+
+        switch (destination)
         {
             case PickupDestination.Left:
                 FillPickUp(ref snapshot.Left, held, fails);
